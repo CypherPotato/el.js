@@ -1,14 +1,19 @@
 {
-    "name": "el",
-    "version": "0.2.0",
+    "name": "@cypherpotato/el",
+    "version": "0.2.1",
     "description": "useful tools for manipulating elements and DOM",
+    "keywords": ["dom", "element", "emmet", "html", "js"],
     "author": "CypherPotato",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CypherPotato/el.js.git"
+    },
+    "homepage": "https://github.com/CypherPotato/el.js",
     "main": "src/el.js",
     "type": "module",
     "scripts": {
         "build": "node build.js"
     },
-    "keywords": [],
     "license": "MIT",
     "devDependencies": {
         "esbuild": "^0.24.0"
