@@ -1,6 +1,6 @@
 {
     "name": "@cypherpotato/el",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "useful tools for manipulating elements and DOM",
     "keywords": ["dom", "element", "emmet", "html", "js"],
     "author": "CypherPotato",

@@ -37,21 +37,56 @@ function setAttributes(element, attributes) {
     attributes.minlength && (element.minLength = attributes.minlength);
     attributes.pattern && (element.pattern = attributes.pattern);
     attributes.step && (element.step = attributes.step);
-    attributes.multiple && (element.multiple = attributes.multiple);
     attributes.checked && (element.checked = attributes.checked);
     attributes.selected && (element.selected = attributes.selected);
     attributes.required && (element.required = attributes.required);
+    attributes.name && (element.name = attributes.name);
+    attributes.multiple && element.setAttribute('multiple', attributes.multiple);
+    attributes.for && element.setAttribute('for', attributes.for);
 
     attributes.src && (element.src = attributes.src);
     attributes.alt && (element.alt = attributes.alt);
     attributes.href && (element.href = attributes.href);
 
+    // Mouse Events
     attributes.onClick && element.addEventListener('click', attributes.onClick);
+    attributes.onMouseDown && element.addEventListener('mousedown', attributes.onMouseDown);
+    attributes.onMouseUp && element.addEventListener('mouseup', attributes.onMouseUp);
+    attributes.onMouseEnter && element.addEventListener('mouseenter', attributes.onMouseEnter);
+    attributes.onMouseLeave && element.addEventListener('mouseleave', attributes.onMouseLeave);
+    attributes.onMouseMove && element.addEventListener('mousemove', attributes.onMouseMove);
+    attributes.onMouseOver && element.addEventListener('mouseover', attributes.onMouseOver);
+    attributes.onMouseOut && element.addEventListener('mouseout', attributes.onMouseOut);
+    attributes.onWheel && element.addEventListener('wheel', attributes.onWheel);
+
+    // Keyboard Events
+    attributes.onKeyUp && element.addEventListener('keyup', attributes.onKeyUp);
+    attributes.onKeyDown && element.addEventListener('keydown', attributes.onKeyDown);
+    attributes.onKeyPress && element.addEventListener('keypress', attributes.onKeyPress);
+
+    // Form Events
     attributes.onChange && element.addEventListener('change', attributes.onChange);
+    attributes.onCancel && element.addEventListener('cancel', attributes.onChange);
+    attributes.onInvalid && element.addEventListener('invalid', attributes.onChange);
     attributes.onFocus && element.addEventListener('focus', attributes.onFocus);
     attributes.onBlur && element.addEventListener('blur', attributes.onBlur);
     attributes.onInput && element.addEventListener('input', attributes.onInput);
     attributes.onSubmit && element.addEventListener('submit', attributes.onSubmit);
+
+    // Touch Events
+    attributes.onTouchStart && element.addEventListener('touchstart', attributes.onTouchStart);
+    attributes.onTouchEnd && element.addEventListener('touchend', attributes.onTouchEnd);
+    attributes.onTouchMove && element.addEventListener('touchmove', attributes.onTouchMove);
+    attributes.onTouchCancel && element.addEventListener('touchcancel', attributes.onTouchCancel);
+
+    // Clipboard Events
+    attributes.onCopy && element.addEventListener('copy', attributes.onCopy);
+    attributes.onCut && element.addEventListener('cut', attributes.onCut);
+    attributes.onPaste && element.addEventListener('paste', attributes.onPaste);
+
+    // Other Events
+    attributes.onScroll && element.addEventListener('scroll', attributes.onScroll);
+
 
     // Atributos data-*
     Object.keys(attributes).forEach(attr => {
@@ -89,7 +124,7 @@ function parseEmmetString(emmetString) {
         attributes: {}
     };
 
-    const tagPattern = /^([a-zA-Z][a-zA-Z0-9]+)/;
+    const tagPattern = /^([a-zA-Z][a-zA-Z0-9\-]+)/;
     const idPattern = /#([\w\d-]+)/;
     const classPattern = /\.([\w\-_]+)/g;
     const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;
