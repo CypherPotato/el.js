@@ -1,6 +1,6 @@
 # el.js
 
-This 2.6 Kb (1.4 Kb gzipped) tool is a library for creating HTML elements with maximum ease. It is a functional alternative to `document.createElement()`.
+This 3,9 Kb (1,8 Kb gzipped) tool is a tool for creating HTML elements. It is a functional alternative to `document.createElement()`.
 
 ## Installation
 

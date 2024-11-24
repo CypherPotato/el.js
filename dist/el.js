@@ -98,9 +98,9 @@
       id: null,
       attributes: {}
     };
-    const tagPattern = /^([a-zA-Z][a-zA-Z0-9\-]+)/;
-    const idPattern = /#([\w\d-]+)/;
-    const classPattern = /\.([\w\-_]+)/g;
+    const tagPattern = /^([a-zA-Z][\w-]+)/;
+    const idPattern = /#([\w-]+)/;
+    const classPattern = /\.([\w-]+)/g;
     const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;
     const tagMatch = emmetString.match(tagPattern);
     if (tagMatch) {
@@ -117,7 +117,7 @@
     let attrMatch;
     while ((attrMatch = attrPattern.exec(emmetString)) !== null) {
       const key = attrMatch[1].trim();
-      const value = attrMatch[2] ? attrMatch[2].trim() : key;
+      const value = attrMatch[2] ? attrMatch[2].trim().replace(/^['"]|['"]$/g, "") : key;
       result.attributes[key] = value;
     }
     return result;
@@ -144,11 +144,6 @@
       return null;
     } else if (arguments.length === 1) {
       return createElementFromEmmet(arguments[0]);
-    } else if (arguments.length === 2) {
-      const element = createElementFromEmmet(arguments[0]);
-      const arg = arguments[1];
-      setArgElement(arg, element);
-      return element;
     } else {
       const element = createElementFromEmmet(arguments[0]);
       for (let i = 1; i < arguments.length; i++) {

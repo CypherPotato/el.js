@@ -87,14 +87,14 @@ function setAttributes(element, attributes) {
     // Other Events
     attributes.onScroll && element.addEventListener('scroll', attributes.onScroll);
 
-
-    // Atributos data-*
+    // Data-* attributes
     Object.keys(attributes).forEach(attr => {
         if (attr.startsWith('data-')) {
             element.setAttribute(attr, attributes[attr]);
         }
     });
 
+    // Custom attributes
     for (const at of Object.entries(attributes)) {
         if (at[0].startsWith('$') && at[1]) {
             element.setAttribute(at[0].substring(1), at[1]);
@@ -124,9 +124,9 @@ function parseEmmetString(emmetString) {
         attributes: {}
     };
 
-    const tagPattern = /^([a-zA-Z][a-zA-Z0-9\-]+)/;
-    const idPattern = /#([\w\d-]+)/;
-    const classPattern = /\.([\w\-_]+)/g;
+    const tagPattern = /^([a-zA-Z][\w-]+)/;
+    const idPattern = /#([\w-]+)/;
+    const classPattern = /\.([\w-]+)/g;
     const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;
 
     const tagMatch = emmetString.match(tagPattern);
@@ -150,16 +150,11 @@ function parseEmmetString(emmetString) {
     let attrMatch;
     while ((attrMatch = attrPattern.exec(emmetString)) !== null) {
         const key = attrMatch[1].trim();
-        const value = attrMatch[2] ? attrMatch[2].trim() : key;
+        const value = attrMatch[2] ? attrMatch[2].trim().replace(/^['"]|['"]$/g, '') : key;
         result.attributes[key] = value;
     }
 
     return result;
-}
-
-function findElementIds() {
-    return Object.fromEntries([...document.querySelectorAll('[id]')]
-        .map(e => [e.id, e]));
 }
 
 const el = function () {
@@ -192,14 +187,6 @@ const el = function () {
     } else if (arguments.length === 1) {
         return createElementFromEmmet(arguments[0]);
 
-    } else if (arguments.length === 2) {
-        const element = createElementFromEmmet(arguments[0]);
-        const arg = arguments[1];
-
-        setArgElement(arg, element);
-
-        return element;
-
     } else {
         const element = createElementFromEmmet(arguments[0]);
 
@@ -207,7 +194,7 @@ const el = function () {
             const arg = arguments[i];
             setArgElement(arg, element);
         }
-
+        
         return element;
     }
 };

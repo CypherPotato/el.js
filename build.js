@@ -5,6 +5,7 @@ import * as esbuild from 'esbuild';
 await esbuild.build({
     entryPoints: ['main.js'],
     bundle: true,
+    target: 'es6',
     outfile: `/dist/el.js`,
 });
 
@@ -13,5 +14,6 @@ await esbuild.build({
     entryPoints: ['main.js'],
     bundle: true,
     minify: true,
+    target: 'es6',
     outfile: `/dist/el.min.js`,
 });
