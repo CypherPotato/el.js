@@ -123,8 +123,8 @@ function parseEmmetString(emmetString) {
         id: null,
         attributes: {}
     };
-
-    const tagPattern = /^([a-zA-Z][\w-]+)/;
+    
+    const tagPattern = /^([a-zA-Z][\w-]*)/;
     const idPattern = /#([\w-]+)/;
     const classPattern = /\.([\w-]+)/g;
     const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;
@@ -194,7 +194,7 @@ const el = function () {
             const arg = arguments[i];
             setArgElement(arg, element);
         }
-        
+
         return element;
     }
 };

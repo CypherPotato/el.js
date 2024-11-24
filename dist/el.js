@@ -98,7 +98,7 @@
       id: null,
       attributes: {}
     };
-    const tagPattern = /^([a-zA-Z][\w-]+)/;
+    const tagPattern = /^([a-zA-Z][\w-]*)/;
     const idPattern = /#([\w-]+)/;
     const classPattern = /\.([\w-]+)/g;
     const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;

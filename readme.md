@@ -18,14 +18,14 @@ npm install @cypherpotato/el
 
 And use it as:
 
-```
+```js
 import el from '@cypherpotato/el';
 ```
 
 ## Usage
 
 ```js
-el("tag-name", ... children|attributes);
+el("tag-name", ... [children|attributes]);
 ```
 
 The `el()` method is used with one or more arguments. The first argument is always the tag of the HTML element, and the other elements are added as children of the element. If one of the arguments is an object, the `el` function will attempt to assign the object's attributes to the element.
@@ -152,6 +152,38 @@ ul(
     <li>Limon</li>
     <li>Banana</li>
 </ul>
+```
+
+---
+
+Custom components with arguments:
+
+```js
+const Card = function (cardTitle, ...children) {
+    return el("div.card",
+        el("div.card-header", cardTitle),
+        el("div.card-body", ...children));
+};
+
+const cardElement = Card("Paris",
+    el("p", "Paris is the capital of France."),
+    el("img", { src: "https://picsum.photos/200" }),
+    el("a", { href: "https://en.wikipedia.org/wiki/Paris" }, "Wikipedia"));
+```
+
+```html
+<div class="card">
+    <div class="card-header">Paris</div>
+    <div class="card-body">
+        <p>
+            Paris is the capital of France.
+        </p>
+        <img src="https://picsum.photos/200">
+        <a href="https://en.wikipedia.org/wiki/Paris">
+            Wikipedia
+        </a>
+    </div>
+</div>
 ```
 
 ---

@@ -1,7 +1,7 @@
 {
     "name": "@cypherpotato/el",
-    "version": "0.2.3",
-    "description": "a tiny tool to create HTMLElement on fly",
+    "version": "0.2.4",
+    "description": "a tiny tool to create HTMLElement on the fly",
     "keywords": ["dom", "element", "emmet", "html", "js"],
     "author": "CypherPotato",
     "repository": {
