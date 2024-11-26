@@ -222,3 +222,111 @@ el(".unsafe-text", unsafeText);
     <p>This is unsafe.</p><script>alert('XSS')</script>
 </div>
 ```
+
+## Defined components
+
+You can define custom components with `el` and later use them as elements. These components are "swapped" with their original elements, maintaining their scope and placing a new component in their place.
+
+See the example below. It registers a component called `city-card` that receives two attributes: `city-name`, `city-description`. These attributes are defined directly on the element being created.
+
+```html
+<body>
+    <city-card city-name="Paris" city-description="The capital of France">
+        <p>Paris is the capital of France.</p>
+        <img src="https://picsum.photos/200" alt="Paris">
+        <a href="https://en.wikipedia.org/wiki/Paris">See more on Wikipedia</a>
+    </city-card>
+</body>
+```
+
+Then, we define our component and the action that will generate another element from the original `<city-card>`:
+
+```js
+el.defineComponent('city-card', attr =>
+    el('.card',
+        el('.card-header', attr['city-name']),
+        el('.card-description', attr['city-description']),
+        el('.card-body', ...attr.slot))); // slot contains the children of the original element
+```
+
+And the result, as soon as the page is loaded, all `<city-card>` will be replaced by the components:
+
+```html
+<div class="card" city-name="Paris" city-description="The capital of France">
+    <div class="card-header">Paris</div>
+    <div class="card-description">The capital of France</div>
+    <div class="card-body">
+        <p>
+            Paris is the capital of France.
+        </p>
+        <img src="https://picsum.photos/200" alt="Paris">
+        <a href="https://en.wikipedia.org/wiki/Paris">
+            See more on Wikipedia
+        </a>
+    </div>
+</div>
+```
+
+All attributes of the original element are preserved in the subsequently created element. Therefore, you will be able to reuse the ID, classes, styles, etc.
+
+Components defined with `el.defineComponent` are only replaced in three situations:
+
+- When the page is loaded for the first time on `document.DOMContentLoaded`.
+- When you try to create a component with `el()`.
+- When you call `el.scanComponents()`, which replaces all components defined on the page.
+
+These elements can also have state, but they are not natively "reactive." The example below illustrates a counter:
+
+```js
+el.defineComponent('counter', function (attr) {
+    var count = attr.start ?? 0;
+    var textElement = el('p', getCurrentText());
+
+    function getCurrentText() {
+        return `Current count: ${count}`;
+    }
+
+    function increment() {
+        count++;
+        textElement.innerText = getCurrentText();
+    }
+
+    function decrement() {
+        count--;
+        textElement.innerText = getCurrentText();
+    }
+
+    return el('.counter',
+        el('button', { onClick: increment }, 'Increment'),
+        el('button', { onClick: decrement }, 'Decrement'),
+        textElement);
+});
+
+const myCounter = el('counter', { start: 10 });
+document.body.appendChild(myCounter);
+```
+
+In the code above, you will have a counter that updates whenever a button is pressed.
+
+There may be cases where some components are not replaced. This can happen if the component was created outside the `el()` function or after the page has loaded. If you have another library that also creates elements on the page, you can create a `MutationObserver` to observe all new elements and replace them if necessary.
+
+```js
+function observeComponents() {
+    const callback = (mutationList, _) => {
+        for (const mutation of mutationList) {
+            if (mutation.type === "childList") {
+                el.scanComponents();
+            }
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+}
+
+observeComponents();
+```
+
+In the code above, `observeComponents()` will observe whenever a new element is created or removed from the DOM, and when that happens, it will call `el.scanComponents()`, which will replace all components defined with `el.defineComponent()`.
+
+These components should not be confused with Web Components (custom elements) or reactive components like those in React. Instead, `el.defineComponent` is a helper that replaces native elements with other native elements.

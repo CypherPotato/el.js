@@ -1,3 +1,5 @@
+import { createComponentReplacement, defineComponent, renderComponents } from "./component";
+
 function setAttributeStyles(element, styleObj) {
     Object.assign(element.style, styleObj);
 }
@@ -17,87 +19,84 @@ function setAttributeClasses(element, classes) {
         element.classList.add(cls);
 }
 
-function setAttributes(element, attributes) {
+export function setElementAttributesObj(element, attributes) {
     if (!element || !attributes) return;
 
-    attributes.style && setAttributeStyles(element, attributes.style);
-    attributes.class && setAttributeClasses(element, attributes.class);
+    const attributeMap = {
+        style: value => setAttributeStyles(element, value),
+        class: value => setAttributeClasses(element, value),
 
-    attributes.id && (element.id = attributes.id);
-    attributes.title && (element.title = attributes.title);
-    attributes.value && (element.value = attributes.value);
-    attributes.type && (element.type = attributes.type);
-    attributes.placeholder && (element.placeholder = attributes.placeholder);
-    attributes.disabled && (element.disabled = attributes.disabled);
-    attributes.readonly && (element.readOnly = attributes.readonly);
-    attributes.autofocus && (element.autofocus = attributes.autofocus);
-    attributes.autocomplete && (element.autocomplete = attributes.autocomplete);
-    attributes.min && (element.min = attributes.min);
-    attributes.max && (element.max = attributes.max);
-    attributes.minlength && (element.minLength = attributes.minlength);
-    attributes.pattern && (element.pattern = attributes.pattern);
-    attributes.step && (element.step = attributes.step);
-    attributes.checked && (element.checked = attributes.checked);
-    attributes.selected && (element.selected = attributes.selected);
-    attributes.required && (element.required = attributes.required);
-    attributes.name && (element.name = attributes.name);
-    attributes.multiple && element.setAttribute('multiple', attributes.multiple);
-    attributes.for && element.setAttribute('for', attributes.for);
+        id: value => element.id = value,
+        title: value => element.title = value,
+        value: value => element.value = value,
+        type: value => element.type = value,
+        placeholder: value => element.placeholder = value,
+        disabled: value => element.disabled = value,
+        readonly: value => element.readOnly = value,
+        autofocus: value => element.autofocus = value,
+        autocomplete: value => element.autocomplete = value,
+        min: value => element.min = value,
+        max: value => element.max = value,
+        minlength: value => element.minLength = value,
+        pattern: value => element.pattern = value,
+        step: value => element.step = value,
+        checked: value => element.checked = value,
+        selected: value => element.selected = value,
+        required: value => element.required = value,
+        name: value => element.name = value,
+        multiple: value => element.setAttribute('multiple', value),
+        for: value => element.setAttribute('for', value),
 
-    attributes.src && (element.src = attributes.src);
-    attributes.alt && (element.alt = attributes.alt);
-    attributes.href && (element.href = attributes.href);
+        src: value => element.src = value,
+        alt: value => element.alt = value,
+        href: value => element.href = value,
 
-    // Mouse Events
-    attributes.onClick && element.addEventListener('click', attributes.onClick);
-    attributes.onMouseDown && element.addEventListener('mousedown', attributes.onMouseDown);
-    attributes.onMouseUp && element.addEventListener('mouseup', attributes.onMouseUp);
-    attributes.onMouseEnter && element.addEventListener('mouseenter', attributes.onMouseEnter);
-    attributes.onMouseLeave && element.addEventListener('mouseleave', attributes.onMouseLeave);
-    attributes.onMouseMove && element.addEventListener('mousemove', attributes.onMouseMove);
-    attributes.onMouseOver && element.addEventListener('mouseover', attributes.onMouseOver);
-    attributes.onMouseOut && element.addEventListener('mouseout', attributes.onMouseOut);
-    attributes.onWheel && element.addEventListener('wheel', attributes.onWheel);
+        onClick: value => element.addEventListener('click', value),
+        onMouseDown: value => element.addEventListener('mousedown', value),
+        onMouseUp: value => element.addEventListener('mouseup', value),
+        onMouseEnter: value => element.addEventListener('mouseenter', value),
+        onMouseLeave: value => element.addEventListener('mouseleave', value),
+        onMouseMove: value => element.addEventListener('mousemove', value),
+        onMouseOver: value => element.addEventListener('mouseover', value),
+        onMouseOut: value => element.addEventListener('mouseout', value),
+        onWheel: value => element.addEventListener('wheel', value),
 
-    // Keyboard Events
-    attributes.onKeyUp && element.addEventListener('keyup', attributes.onKeyUp);
-    attributes.onKeyDown && element.addEventListener('keydown', attributes.onKeyDown);
-    attributes.onKeyPress && element.addEventListener('keypress', attributes.onKeyPress);
+        onKeyUp: value => element.addEventListener('keyup', value),
+        onKeyDown: value => element.addEventListener('keydown', value),
+        onKeyPress: value => element.addEventListener('keypress', value),
 
-    // Form Events
-    attributes.onChange && element.addEventListener('change', attributes.onChange);
-    attributes.onCancel && element.addEventListener('cancel', attributes.onChange);
-    attributes.onInvalid && element.addEventListener('invalid', attributes.onChange);
-    attributes.onFocus && element.addEventListener('focus', attributes.onFocus);
-    attributes.onBlur && element.addEventListener('blur', attributes.onBlur);
-    attributes.onInput && element.addEventListener('input', attributes.onInput);
-    attributes.onSubmit && element.addEventListener('submit', attributes.onSubmit);
+        onChange: value => element.addEventListener('change', value),
+        onCancel: value => element.addEventListener('cancel', value),
+        onInvalid: value => element.addEventListener('invalid', value),
+        onFocus: value => element.addEventListener('focus', value),
+        onBlur: value => element.addEventListener('blur', value),
+        onInput: value => element.addEventListener('input', value),
+        onSubmit: value => element.addEventListener('submit', value),
 
-    // Touch Events
-    attributes.onTouchStart && element.addEventListener('touchstart', attributes.onTouchStart);
-    attributes.onTouchEnd && element.addEventListener('touchend', attributes.onTouchEnd);
-    attributes.onTouchMove && element.addEventListener('touchmove', attributes.onTouchMove);
-    attributes.onTouchCancel && element.addEventListener('touchcancel', attributes.onTouchCancel);
+        onTouchStart: value => element.addEventListener('touchstart', value),
+        onTouchEnd: value => element.addEventListener('touchend', value),
+        onTouchMove: value => element.addEventListener('touchmove', value),
+        onTouchCancel: value => element.addEventListener('touchcancel', value),
 
-    // Clipboard Events
-    attributes.onCopy && element.addEventListener('copy', attributes.onCopy);
-    attributes.onCut && element.addEventListener('cut', attributes.onCut);
-    attributes.onPaste && element.addEventListener('paste', attributes.onPaste);
+        onCopy: value => element.addEventListener('copy', value),
+        onCut: value => element.addEventListener('cut', value),
+        onPaste: value => element.addEventListener('paste', value),
 
-    // Other Events
-    attributes.onScroll && element.addEventListener('scroll', attributes.onScroll);
+        onScroll: value => element.addEventListener('scroll', value)
+    };
 
-    // Data-* attributes
-    Object.keys(attributes).forEach(attr => {
-        if (attr.startsWith('data-')) {
-            element.setAttribute(attr, attributes[attr]);
-        }
-    });
+    for (const attr of Object.entries(attributes)) {
+        const name = attr[0];
+        const value = attr[1];
 
-    // Custom attributes
-    for (const at of Object.entries(attributes)) {
-        if (at[0].startsWith('$') && at[1]) {
-            element.setAttribute(at[0].substring(1), at[1]);
+        if (name == 'slot' && value instanceof NodeList) {
+            continue;
+
+        } else if (attributeMap[name]) {
+            attributeMap[name](value);
+
+        } else {
+            element.setAttribute(name, value);
         }
     }
 }
@@ -123,7 +122,7 @@ function parseEmmetString(emmetString) {
         id: null,
         attributes: {}
     };
-    
+
     const tagPattern = /^([a-zA-Z][\w-]*)/;
     const idPattern = /#([\w-]+)/;
     const classPattern = /\.([\w-]+)/g;
@@ -160,32 +159,27 @@ function parseEmmetString(emmetString) {
 const el = function () {
 
     function setArgElement(arg, element) {
-
         if (arg == null) {
             return;
 
         } else if (arg instanceof HTMLElement) {
             element.appendChild(arg);
-
-        } else if (arg instanceof NodeList) {
-            for (const node of arg) {
-                element.appendChild(node);
-            }
-
+        
         } else if (typeof arg === 'string') {
             element.appendChild(document.createTextNode(arg));
 
         } else if (typeof arg === 'object') {
-            setAttributes(element, arg);
+            setElementAttributesObj(element, arg);
         }
     };
 
+    var result;
     if (arguments.length === 0) {
         console.error('el() requires at least one argument');
-        return null;
+        result = null;
 
     } else if (arguments.length === 1) {
-        return createElementFromEmmet(arguments[0]);
+        result = createElementFromEmmet(arguments[0]);
 
     } else {
         const element = createElementFromEmmet(arguments[0]);
@@ -195,8 +189,18 @@ const el = function () {
             setArgElement(arg, element);
         }
 
-        return element;
+        result = element;
     }
+
+    if (window.__elCustomComponents) {
+        for (const component of window.__elCustomComponents) {
+            if (component.tagname == result.tagName) {
+                result = createComponentReplacement(component, result);
+            }
+        }
+    }
+
+    return result;
 };
 
 el.raw = function (e) {
@@ -204,5 +208,8 @@ el.raw = function (e) {
     div.innerHTML = e.trim();
     return div.childNodes;
 };
+
+el.defineComponent = defineComponent;
+el.scanComponents = renderComponents;
 
 export default el;
