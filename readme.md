@@ -1,6 +1,6 @@
 # el.js
 
-This 3,9 Kb (1,8 Kb gzipped) tool is a tool for creating HTML elements. It is a functional alternative to `document.createElement()`.
+This 4,2 Kb (2,0 Kb gzipped) tool is a tool for creating HTML elements. It is a functional alternative to `document.createElement()`.
 
 ## Installation
 
@@ -125,11 +125,11 @@ Custom attributes:
 
 ```js
 el("div", {
-    $customAttribute: "custom value",
-    '$data-custom-text': true});
+    customAttribute: "custom value",
+    'data-custom-text': true});
 ```
 ```html
-<div customattribute="custom value" data-custom-text="true">
+<div customattribute="custom value" data-custom-text="data-custom-text">
 </div>
 ```
 
