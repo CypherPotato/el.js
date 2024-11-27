@@ -7,35 +7,11 @@
 
         <script src="/dist/el.min.js"></script>
     </head>
-    
+
     <body>
         <script>
-            el.defineComponent('counter', function (attr) {
-                var count = attr.start ?? 0;
-                var textElement = el('p', getCurrentText());
-
-                function getCurrentText() {
-                    return `Current count: ${count}`;
-                }
-
-                function increment() {
-                    count++;
-                    textElement.innerText = getCurrentText();
-                }
-
-                function decrement() {
-                    count--;
-                    textElement.innerText = getCurrentText();
-                }
-
-                return el('.counter',
-                    el('button', { onClick: increment }, 'Increment'),
-                    el('button', { onClick: decrement }, 'Decrement'),
-                    textElement);
-            });
-
-            const myCounter = el('counter', { start: 10 });
-            document.body.appendChild(myCounter);
+            el.defineComponent('my-component', attr => el("div.component",
+                ...attr.slot));
         </script>
     </body>
 </html>

@@ -8,9 +8,11 @@ function setAttributeClasses(element, classes) {
     var classList;
 
     if (Array.isArray(classes)) {
-        classList = classes;
+        classList = classes.filter(n => n != false && n != null);
+
     } else if (typeof classes === 'string') {
         classList = classes.split(' ');
+
     } else {
         classList = [];
     }
@@ -89,14 +91,21 @@ export function setElementAttributesObj(element, attributes) {
         const name = attr[0];
         const value = attr[1];
 
-        if (name == 'slot' && value instanceof NodeList) {
+        if (value === false || value == null) {
+            continue;
+
+        } else if (name == 'slot' && value instanceof NodeList) {
             continue;
 
         } else if (attributeMap[name]) {
             attributeMap[name](value);
 
         } else {
-            element.setAttribute(name, value);
+            if (value === true) {
+                element.setAttribute(name, name);
+            } else {
+                element.setAttribute(name, value);
+            }
         }
     }
 }
@@ -107,8 +116,10 @@ function createElementFromEmmet(emmetString) {
     var doc = document.createElement(parsed.tagName);
     if (parsed.id)
         doc.id = parsed.id;
+
     for (const className of parsed.classList)
         doc.classList.add(className);
+
     for (const [key, value] of Object.entries(parsed.attributes))
         doc.setAttribute(key, value);
 
@@ -159,23 +170,38 @@ function parseEmmetString(emmetString) {
 const el = function () {
 
     function setArgElement(arg, element) {
-        if (arg == null) {
+
+        const argType = typeof arg;
+
+        // skip false, null
+        if (arg == null || arg == false) {
             return;
 
-        } else if (arg instanceof HTMLElement) {
+            // node, HTMLElement
+        } else if (arg instanceof Node) {
             element.appendChild(arg);
-        
-        } else if (typeof arg === 'string') {
-            element.appendChild(document.createTextNode(arg));
 
-        } else if (typeof arg === 'object') {
+            // strings
+        } else if (argType === 'string' || argType === 'number') {
+            element.appendChild(document.createTextNode(arg));
+            
+            // arrays, NodeList, iterables
+        } else if (argType[Symbol.iterator] === 'function') {
+            for (const item of arg)
+                element.appendChild(item);
+
+            // object (attributes)
+        } else if (argType === 'object') {
             setElementAttributesObj(element, arg);
+
+        } else {
+            console.warn('el.js: given an unknown argument type for el() constructor for element ' + element.tagName + ': ' + typeof arg);
         }
     };
 
     var result;
     if (arguments.length === 0) {
-        console.error('el() requires at least one argument');
+        console.error('el.js: el() requires at least one argument');
         result = null;
 
     } else if (arguments.length === 1) {
@@ -207,6 +233,10 @@ el.raw = function (e) {
     var div = document.createElement('div');
     div.innerHTML = e.trim();
     return div.childNodes;
+};
+
+el.text = function (text) {
+    return document.createTextNode(text);
 };
 
 el.defineComponent = defineComponent;
