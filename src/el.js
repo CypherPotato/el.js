@@ -1,7 +1,11 @@
 import { createComponentReplacement, defineComponent, renderComponents } from "./component";
 
 function setAttributeStyles(element, styleObj) {
-    Object.assign(element.style, styleObj);
+    if (typeof styleObj === 'string') {
+        element.style.cssText = styleObj;
+    } else {
+        Object.assign(element.style, styleObj);
+    }
 }
 
 function setAttributeClasses(element, classes) {
@@ -174,17 +178,17 @@ const el = function () {
         const argType = typeof arg;
 
         // skip false, null
-        if (arg == null || arg == false) {
+        if (arg == null || arg === false) {
             return;
 
             // node, HTMLElement
         } else if (arg instanceof Node) {
             element.appendChild(arg);
-
+            
             // strings
         } else if (argType === 'string' || argType === 'number') {
             element.appendChild(document.createTextNode(arg));
-            
+
             // arrays, NodeList, iterables
         } else if (argType[Symbol.iterator] === 'function') {
             for (const item of arg)
@@ -235,7 +239,8 @@ el.raw = function (e) {
     return div.childNodes;
 };
 
-el.text = function (text) {
+el.text = function () {
+    const text = [...arguments].join('');
     return document.createTextNode(text);
 };
 

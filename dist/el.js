@@ -26,7 +26,11 @@
 
   // src/el.js
   function setAttributeStyles(element, styleObj) {
-    Object.assign(element.style, styleObj);
+    if (typeof styleObj === "string") {
+      element.style.cssText = styleObj;
+    } else {
+      Object.assign(element.style, styleObj);
+    }
   }
   function setAttributeClasses(element, classes) {
     var classList;
@@ -159,7 +163,7 @@
   var el = function() {
     function setArgElement(arg, element) {
       const argType = typeof arg;
-      if (arg == null || arg == false) {
+      if (arg == null || arg === false) {
         return;
       } else if (arg instanceof Node) {
         element.appendChild(arg);
@@ -203,7 +207,8 @@
     div.innerHTML = e.trim();
     return div.childNodes;
   };
-  el.text = function(text) {
+  el.text = function() {
+    const text = [...arguments].join("");
     return document.createTextNode(text);
   };
   el.defineComponent = defineComponent;
