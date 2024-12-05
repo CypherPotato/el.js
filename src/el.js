@@ -130,6 +130,33 @@ function createElementFromEmmet(emmetString) {
     return doc;
 }
 
+function createFragment() {
+    const fragment = document.createDocumentFragment();
+
+    for (const arg of arguments) {
+        const argType = typeof arg;
+
+        if (arg == null) {
+            continue;
+
+        } else if (arg instanceof Node) {
+            fragment.appendChild(arg);
+
+        } else if (argType === 'string' || argType === 'number') {
+            fragment.appendChild(document.createTextNode(arg));
+
+        } else if (argType[Symbol.iterator] === 'function') {
+            for (const item of arg)
+                fragment.appendChild(item);
+
+        } else {
+            console.warn('el.js: given an unknown argument type for el.fragment() constructor for fragment: ' + argType);
+        }
+    }
+
+    return fragment;
+}
+
 function parseEmmetString(emmetString) {
     const result = {
         tagName: "div",
@@ -184,7 +211,7 @@ const el = function () {
             // node, HTMLElement
         } else if (arg instanceof Node) {
             element.appendChild(arg);
-            
+
             // strings
         } else if (argType === 'string' || argType === 'number') {
             element.appendChild(document.createTextNode(arg));
@@ -244,6 +271,7 @@ el.text = function () {
     return document.createTextNode(text);
 };
 
+el.fragment = createFragment;
 el.defineComponent = defineComponent;
 el.scanComponents = renderComponents;
 
