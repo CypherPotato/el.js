@@ -1,4 +1,6 @@
 import { createComponentReplacement, defineComponent, renderComponents } from "./component";
+import { createElementFromEmmet } from "./emmet";
+import { kebabizeAttributeName } from "./kebabize";
 
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
@@ -31,7 +33,8 @@ export function setElementAttributesObj(element, attributes) {
     const attributeMap = {
         style: value => setAttributeStyles(element, value),
         class: value => setAttributeClasses(element, value),
-
+        className: value => setAttributeClasses(element, value),
+        
         id: value => element.id = value,
         title: value => element.title = value,
         value: value => element.value = value,
@@ -55,8 +58,10 @@ export function setElementAttributesObj(element, attributes) {
 
         src: value => element.src = value,
         alt: value => element.alt = value,
-        href: value => element.href = value,
+        href: value => element.href = value
+    };
 
+    const eventMap = {
         onClick: value => element.addEventListener('click', value),
         onMouseDown: value => element.addEventListener('mousedown', value),
         onMouseUp: value => element.addEventListener('mouseup', value),
@@ -95,6 +100,8 @@ export function setElementAttributesObj(element, attributes) {
         const name = attr[0];
         const value = attr[1];
 
+        const kebabized = kebabizeAttributeName(name);
+
         if (value === false || value == null) {
             continue;
 
@@ -104,98 +111,56 @@ export function setElementAttributesObj(element, attributes) {
         } else if (attributeMap[name]) {
             attributeMap[name](value);
 
+            // also set the attribute directly as a fallback
+            element.setAttribute(kebabized, value);
+
+        } else if (eventMap[name]) {
+            eventMap[name](value);
+        
         } else {
             if (value === true) {
-                element.setAttribute(name, name);
+                element.setAttribute(kebabized, kebabized);
             } else {
-                element.setAttribute(name, value);
+                element.setAttribute(kebabized, value);
             }
         }
     }
 }
 
-function createElementFromEmmet(emmetString) {
-    const parsed = parseEmmetString(emmetString);
-
-    var doc = document.createElement(parsed.tagName);
-    if (parsed.id)
-        doc.id = parsed.id;
-
-    for (const className of parsed.classList)
-        doc.classList.add(className);
-
-    for (const [key, value] of Object.entries(parsed.attributes))
-        doc.setAttribute(key, value);
-
-    return doc;
-}
-
 function createFragment() {
     const fragment = document.createDocumentFragment();
 
-    for (const arg of arguments) {
+    function setArgFragment(arg, fragment) {
+
         const argType = typeof arg;
 
-        if (arg == null) {
-            continue;
+        // skip false, null
+        if (arg == null || arg === false) {
+            return;
 
+            // node, HTMLElement
         } else if (arg instanceof Node) {
             fragment.appendChild(arg);
 
+            // strings
         } else if (argType === 'string' || argType === 'number') {
             fragment.appendChild(document.createTextNode(arg));
 
-        } else if (argType[Symbol.iterator] === 'function') {
+            // arrays, NodeList, iterables
+        } else if (typeof arg[Symbol.iterator] === 'function') {
             for (const item of arg)
-                fragment.appendChild(item);
+                setArgFragment(item, fragment);
 
         } else {
-            console.warn('el.js: given an unknown argument type for el.fragment() constructor for fragment: ' + argType);
+            console.warn('el.js: given an unknown argument type for el.fragment() constructor for arg: ', arg);
         }
+    };
+
+    for (const arg of arguments) {
+        setArgFragment(arg, fragment);
     }
 
     return fragment;
-}
-
-function parseEmmetString(emmetString) {
-    const result = {
-        tagName: "div",
-        classList: [],
-        id: null,
-        attributes: {}
-    };
-
-    const tagPattern = /^([a-zA-Z][\w-]*)/;
-    const idPattern = /#([\w-]+)/;
-    const classPattern = /\.([\w-]+)/g;
-    const attrPattern = /\[([^\]=]+)(?:=([^\]]+))?\]/g;
-
-    const tagMatch = emmetString.match(tagPattern);
-    if (tagMatch) {
-        result.tagName = tagMatch[1];
-    }
-
-    // Extract ID
-    const idMatch = emmetString.match(idPattern);
-    if (idMatch) {
-        result.id = idMatch[1];
-    }
-
-    // Extract class names
-    let classMatch;
-    while ((classMatch = classPattern.exec(emmetString)) !== null) {
-        result.classList.push(classMatch[1]);
-    }
-
-    // Extract attributes
-    let attrMatch;
-    while ((attrMatch = attrPattern.exec(emmetString)) !== null) {
-        const key = attrMatch[1].trim();
-        const value = attrMatch[2] ? attrMatch[2].trim().replace(/^['"]|['"]$/g, '') : key;
-        result.attributes[key] = value;
-    }
-
-    return result;
 }
 
 const el = function () {
@@ -217,9 +182,9 @@ const el = function () {
             element.appendChild(document.createTextNode(arg));
 
             // arrays, NodeList, iterables
-        } else if (argType[Symbol.iterator] === 'function') {
+        } else if (typeof arg[Symbol.iterator] === 'function') {
             for (const item of arg)
-                element.appendChild(item);
+                setArgElement(item, element);
 
             // object (attributes)
         } else if (argType === 'object') {

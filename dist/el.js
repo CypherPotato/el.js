@@ -24,130 +24,7 @@
     }
   }
 
-  // src/el.js
-  function setAttributeStyles(element, styleObj) {
-    if (typeof styleObj === "string") {
-      element.style.cssText = styleObj;
-    } else {
-      Object.assign(element.style, styleObj);
-    }
-  }
-  function setAttributeClasses(element, classes) {
-    var classList;
-    if (Array.isArray(classes)) {
-      classList = classes.filter((n) => n != false && n != null);
-    } else if (typeof classes === "string") {
-      classList = classes.split(" ");
-    } else {
-      classList = [];
-    }
-    for (const cls of classList)
-      element.classList.add(cls);
-  }
-  function setElementAttributesObj(element, attributes) {
-    if (!element || !attributes) return;
-    const attributeMap = {
-      style: (value) => setAttributeStyles(element, value),
-      class: (value) => setAttributeClasses(element, value),
-      id: (value) => element.id = value,
-      title: (value) => element.title = value,
-      value: (value) => element.value = value,
-      type: (value) => element.type = value,
-      placeholder: (value) => element.placeholder = value,
-      disabled: (value) => element.disabled = value,
-      readonly: (value) => element.readOnly = value,
-      autofocus: (value) => element.autofocus = value,
-      autocomplete: (value) => element.autocomplete = value,
-      min: (value) => element.min = value,
-      max: (value) => element.max = value,
-      minlength: (value) => element.minLength = value,
-      pattern: (value) => element.pattern = value,
-      step: (value) => element.step = value,
-      checked: (value) => element.checked = value,
-      selected: (value) => element.selected = value,
-      required: (value) => element.required = value,
-      name: (value) => element.name = value,
-      multiple: (value) => element.setAttribute("multiple", value),
-      for: (value) => element.setAttribute("for", value),
-      src: (value) => element.src = value,
-      alt: (value) => element.alt = value,
-      href: (value) => element.href = value,
-      onClick: (value) => element.addEventListener("click", value),
-      onMouseDown: (value) => element.addEventListener("mousedown", value),
-      onMouseUp: (value) => element.addEventListener("mouseup", value),
-      onMouseEnter: (value) => element.addEventListener("mouseenter", value),
-      onMouseLeave: (value) => element.addEventListener("mouseleave", value),
-      onMouseMove: (value) => element.addEventListener("mousemove", value),
-      onMouseOver: (value) => element.addEventListener("mouseover", value),
-      onMouseOut: (value) => element.addEventListener("mouseout", value),
-      onWheel: (value) => element.addEventListener("wheel", value),
-      onKeyUp: (value) => element.addEventListener("keyup", value),
-      onKeyDown: (value) => element.addEventListener("keydown", value),
-      onKeyPress: (value) => element.addEventListener("keypress", value),
-      onChange: (value) => element.addEventListener("change", value),
-      onCancel: (value) => element.addEventListener("cancel", value),
-      onInvalid: (value) => element.addEventListener("invalid", value),
-      onFocus: (value) => element.addEventListener("focus", value),
-      onBlur: (value) => element.addEventListener("blur", value),
-      onInput: (value) => element.addEventListener("input", value),
-      onSubmit: (value) => element.addEventListener("submit", value),
-      onTouchStart: (value) => element.addEventListener("touchstart", value),
-      onTouchEnd: (value) => element.addEventListener("touchend", value),
-      onTouchMove: (value) => element.addEventListener("touchmove", value),
-      onTouchCancel: (value) => element.addEventListener("touchcancel", value),
-      onCopy: (value) => element.addEventListener("copy", value),
-      onCut: (value) => element.addEventListener("cut", value),
-      onPaste: (value) => element.addEventListener("paste", value),
-      onScroll: (value) => element.addEventListener("scroll", value)
-    };
-    for (const attr of Object.entries(attributes)) {
-      const name = attr[0];
-      const value = attr[1];
-      if (value === false || value == null) {
-        continue;
-      } else if (name == "slot" && value instanceof NodeList) {
-        continue;
-      } else if (attributeMap[name]) {
-        attributeMap[name](value);
-      } else {
-        if (value === true) {
-          element.setAttribute(name, name);
-        } else {
-          element.setAttribute(name, value);
-        }
-      }
-    }
-  }
-  function createElementFromEmmet(emmetString) {
-    const parsed = parseEmmetString(emmetString);
-    var doc = document.createElement(parsed.tagName);
-    if (parsed.id)
-      doc.id = parsed.id;
-    for (const className of parsed.classList)
-      doc.classList.add(className);
-    for (const [key, value] of Object.entries(parsed.attributes))
-      doc.setAttribute(key, value);
-    return doc;
-  }
-  function createFragment() {
-    const fragment = document.createDocumentFragment();
-    for (const arg of arguments) {
-      const argType = typeof arg;
-      if (arg == null) {
-        continue;
-      } else if (arg instanceof Node) {
-        fragment.appendChild(arg);
-      } else if (argType === "string" || argType === "number") {
-        fragment.appendChild(document.createTextNode(arg));
-      } else if (argType[Symbol.iterator] === "function") {
-        for (const item of arg)
-          fragment.appendChild(item);
-      } else {
-        console.warn("el.js: given an unknown argument type for el.fragment() constructor for fragment: " + argType);
-      }
-    }
-    return fragment;
-  }
+  // src/emmet.js
   function parseEmmetString(emmetString) {
     const result = {
       tagName: "div",
@@ -179,6 +56,151 @@
     }
     return result;
   }
+  function createElementFromEmmet(emmetString) {
+    const parsed = parseEmmetString(emmetString);
+    var doc = document.createElement(parsed.tagName);
+    if (parsed.id)
+      doc.id = parsed.id;
+    for (const className of parsed.classList)
+      doc.classList.add(className);
+    for (const [key, value] of Object.entries(parsed.attributes))
+      doc.setAttribute(key, value);
+    return doc;
+  }
+
+  // src/kebabize.js
+  var kebabizeCore = (str) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $.toLowerCase());
+  function kebabizeAttributeName(s) {
+    if (/[A-Z]/.test(s) && !s.includes("-")) {
+      return kebabizeCore(s);
+    }
+    return s;
+  }
+
+  // src/el.js
+  function setAttributeStyles(element, styleObj) {
+    if (typeof styleObj === "string") {
+      element.style.cssText = styleObj;
+    } else {
+      Object.assign(element.style, styleObj);
+    }
+  }
+  function setAttributeClasses(element, classes) {
+    var classList;
+    if (Array.isArray(classes)) {
+      classList = classes.filter((n) => n != false && n != null);
+    } else if (typeof classes === "string") {
+      classList = classes.split(" ");
+    } else {
+      classList = [];
+    }
+    for (const cls of classList)
+      element.classList.add(cls);
+  }
+  function setElementAttributesObj(element, attributes) {
+    if (!element || !attributes) return;
+    const attributeMap = {
+      style: (value) => setAttributeStyles(element, value),
+      class: (value) => setAttributeClasses(element, value),
+      className: (value) => setAttributeClasses(element, value),
+      id: (value) => element.id = value,
+      title: (value) => element.title = value,
+      value: (value) => element.value = value,
+      type: (value) => element.type = value,
+      placeholder: (value) => element.placeholder = value,
+      disabled: (value) => element.disabled = value,
+      readonly: (value) => element.readOnly = value,
+      autofocus: (value) => element.autofocus = value,
+      autocomplete: (value) => element.autocomplete = value,
+      min: (value) => element.min = value,
+      max: (value) => element.max = value,
+      minlength: (value) => element.minLength = value,
+      pattern: (value) => element.pattern = value,
+      step: (value) => element.step = value,
+      checked: (value) => element.checked = value,
+      selected: (value) => element.selected = value,
+      required: (value) => element.required = value,
+      name: (value) => element.name = value,
+      multiple: (value) => element.setAttribute("multiple", value),
+      for: (value) => element.setAttribute("for", value),
+      src: (value) => element.src = value,
+      alt: (value) => element.alt = value,
+      href: (value) => element.href = value
+    };
+    const eventMap = {
+      onClick: (value) => element.addEventListener("click", value),
+      onMouseDown: (value) => element.addEventListener("mousedown", value),
+      onMouseUp: (value) => element.addEventListener("mouseup", value),
+      onMouseEnter: (value) => element.addEventListener("mouseenter", value),
+      onMouseLeave: (value) => element.addEventListener("mouseleave", value),
+      onMouseMove: (value) => element.addEventListener("mousemove", value),
+      onMouseOver: (value) => element.addEventListener("mouseover", value),
+      onMouseOut: (value) => element.addEventListener("mouseout", value),
+      onWheel: (value) => element.addEventListener("wheel", value),
+      onKeyUp: (value) => element.addEventListener("keyup", value),
+      onKeyDown: (value) => element.addEventListener("keydown", value),
+      onKeyPress: (value) => element.addEventListener("keypress", value),
+      onChange: (value) => element.addEventListener("change", value),
+      onCancel: (value) => element.addEventListener("cancel", value),
+      onInvalid: (value) => element.addEventListener("invalid", value),
+      onFocus: (value) => element.addEventListener("focus", value),
+      onBlur: (value) => element.addEventListener("blur", value),
+      onInput: (value) => element.addEventListener("input", value),
+      onSubmit: (value) => element.addEventListener("submit", value),
+      onTouchStart: (value) => element.addEventListener("touchstart", value),
+      onTouchEnd: (value) => element.addEventListener("touchend", value),
+      onTouchMove: (value) => element.addEventListener("touchmove", value),
+      onTouchCancel: (value) => element.addEventListener("touchcancel", value),
+      onCopy: (value) => element.addEventListener("copy", value),
+      onCut: (value) => element.addEventListener("cut", value),
+      onPaste: (value) => element.addEventListener("paste", value),
+      onScroll: (value) => element.addEventListener("scroll", value)
+    };
+    for (const attr of Object.entries(attributes)) {
+      const name = attr[0];
+      const value = attr[1];
+      const kebabized = kebabizeAttributeName(name);
+      if (value === false || value == null) {
+        continue;
+      } else if (name == "slot" && value instanceof NodeList) {
+        continue;
+      } else if (attributeMap[name]) {
+        attributeMap[name](value);
+        element.setAttribute(kebabized, value);
+      } else if (eventMap[name]) {
+        eventMap[name](value);
+      } else {
+        if (value === true) {
+          element.setAttribute(kebabized, kebabized);
+        } else {
+          element.setAttribute(kebabized, value);
+        }
+      }
+    }
+  }
+  function createFragment() {
+    const fragment = document.createDocumentFragment();
+    function setArgFragment(arg, fragment2) {
+      const argType = typeof arg;
+      if (arg == null || arg === false) {
+        return;
+      } else if (arg instanceof Node) {
+        fragment2.appendChild(arg);
+      } else if (argType === "string" || argType === "number") {
+        fragment2.appendChild(document.createTextNode(arg));
+      } else if (typeof arg[Symbol.iterator] === "function") {
+        for (const item of arg)
+          setArgFragment(item, fragment2);
+      } else {
+        console.warn("el.js: given an unknown argument type for el.fragment() constructor for arg: ", arg);
+      }
+    }
+    ;
+    for (const arg of arguments) {
+      setArgFragment(arg, fragment);
+    }
+    return fragment;
+  }
   var el = function() {
     function setArgElement(arg, element) {
       const argType = typeof arg;
@@ -188,9 +210,9 @@
         element.appendChild(arg);
       } else if (argType === "string" || argType === "number") {
         element.appendChild(document.createTextNode(arg));
-      } else if (argType[Symbol.iterator] === "function") {
+      } else if (typeof arg[Symbol.iterator] === "function") {
         for (const item of arg)
-          element.appendChild(item);
+          setArgElement(item, element);
       } else if (argType === "object") {
         setElementAttributesObj(element, arg);
       } else {
