@@ -30,11 +30,13 @@ function setAttributeClasses(element, classes) {
 export function setElementAttributesObj(element, attributes) {
     if (!element || !attributes) return;
 
-    const attributeMap = {
+    const handledMap = {
         style: value => setAttributeStyles(element, value),
         class: value => setAttributeClasses(element, value),
         className: value => setAttributeClasses(element, value),
-        
+    };
+
+    const attributeMap = {
         id: value => element.id = value,
         title: value => element.title = value,
         value: value => element.value = value,
@@ -108,6 +110,9 @@ export function setElementAttributesObj(element, attributes) {
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
 
+        } else if (handledMap[name]) {
+            handledMap[name](value);
+        
         } else if (attributeMap[name]) {
             attributeMap[name](value);
 
@@ -116,7 +121,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (eventMap[name]) {
             eventMap[name](value);
-        
+
         } else {
             if (value === true) {
                 element.setAttribute(kebabized, kebabized);
