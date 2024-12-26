@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
 
-        <script src="/dist/el.min.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
-    <body>
-        <script>
+    <script src="/dist/el.min.js"></script>
+</head>
 
-        </script>
-    </body>
+<body>
+    <script>
+        el.defineComponent('my-component', attr =>
+            el("p", attr.name, attr));
+        
+        document.body.appendChild(el("my-component", { name: "Hello World", onClick: () => alert("clicked") }));
+    </script>
+</body>
+
 </html>

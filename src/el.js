@@ -1,6 +1,7 @@
 import { createComponentReplacement, defineComponent, renderComponents } from "./component";
 import { createElementFromEmmet } from "./emmet";
 import { kebabizeAttributeName } from "./kebabize";
+import { addEventListenerStored } from "./listener";
 
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
@@ -57,45 +58,45 @@ export function setElementAttributesObj(element, attributes) {
         name: value => element.name = value,
         multiple: value => element.setAttribute('multiple', value),
         for: value => element.setAttribute('for', value),
-
+        
         src: value => element.src = value,
         alt: value => element.alt = value,
         href: value => element.href = value
     };
 
     const eventMap = {
-        onClick: value => element.addEventListener('click', value),
-        onMouseDown: value => element.addEventListener('mousedown', value),
-        onMouseUp: value => element.addEventListener('mouseup', value),
-        onMouseEnter: value => element.addEventListener('mouseenter', value),
-        onMouseLeave: value => element.addEventListener('mouseleave', value),
-        onMouseMove: value => element.addEventListener('mousemove', value),
-        onMouseOver: value => element.addEventListener('mouseover', value),
-        onMouseOut: value => element.addEventListener('mouseout', value),
-        onWheel: value => element.addEventListener('wheel', value),
+        onClick: value => addEventListenerStored(element, 'click', value),
+        onMouseDown: value => addEventListenerStored(element, 'mousedown', value),
+        onMouseUp: value => addEventListenerStored(element, 'mouseup', value),
+        onMouseEnter: value => addEventListenerStored(element, 'mouseenter', value),
+        onMouseLeave: value => addEventListenerStored(element, 'mouseleave', value),
+        onMouseMove: value => addEventListenerStored(element, 'mousemove', value),
+        onMouseOver: value => addEventListenerStored(element, 'mouseover', value),
+        onMouseOut: value => addEventListenerStored(element, 'mouseout', value),
+        onWheel: value => addEventListenerStored(element, 'wheel', value),
 
-        onKeyUp: value => element.addEventListener('keyup', value),
-        onKeyDown: value => element.addEventListener('keydown', value),
-        onKeyPress: value => element.addEventListener('keypress', value),
+        onKeyUp: value => addEventListenerStored(element, 'keyup', value),
+        onKeyDown: value => addEventListenerStored(element, 'keydown', value),
+        onKeyPress: value => addEventListenerStored(element, 'keypress', value),
 
-        onChange: value => element.addEventListener('change', value),
-        onCancel: value => element.addEventListener('cancel', value),
-        onInvalid: value => element.addEventListener('invalid', value),
-        onFocus: value => element.addEventListener('focus', value),
-        onBlur: value => element.addEventListener('blur', value),
-        onInput: value => element.addEventListener('input', value),
-        onSubmit: value => element.addEventListener('submit', value),
+        onChange: value => addEventListenerStored(element, 'change', value),
+        onCancel: value => addEventListenerStored(element, 'cancel', value),
+        onInvalid: value => addEventListenerStored(element, 'invalid', value),
+        onFocus: value => addEventListenerStored(element, 'focus', value),
+        onBlur: value => addEventListenerStored(element, 'blur', value),
+        onInput: value => addEventListenerStored(element, 'input', value),
+        onSubmit: value => addEventListenerStored(element, 'submit', value),
 
-        onTouchStart: value => element.addEventListener('touchstart', value),
-        onTouchEnd: value => element.addEventListener('touchend', value),
-        onTouchMove: value => element.addEventListener('touchmove', value),
-        onTouchCancel: value => element.addEventListener('touchcancel', value),
+        onTouchStart: value => addEventListenerStored(element, 'touchstart', value),
+        onTouchEnd: value => addEventListenerStored(element, 'touchend', value),
+        onTouchMove: value => addEventListenerStored(element, 'touchmove', value),
+        onTouchCancel: value => addEventListenerStored(element, 'touchcancel', value),
 
-        onCopy: value => element.addEventListener('copy', value),
-        onCut: value => element.addEventListener('cut', value),
-        onPaste: value => element.addEventListener('paste', value),
+        onCopy: value => addEventListenerStored(element, 'copy', value),
+        onCut: value => addEventListenerStored(element, 'cut', value),
+        onPaste: value => addEventListenerStored(element, 'paste', value),
 
-        onScroll: value => element.addEventListener('scroll', value)
+        onScroll: value => addEventListenerStored(element, 'scroll', value)
     };
 
     for (const attr of Object.entries(attributes)) {
@@ -112,7 +113,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (handledMap[name]) {
             handledMap[name](value);
-        
+
         } else if (attributeMap[name]) {
             attributeMap[name](value);
 
@@ -120,6 +121,7 @@ export function setElementAttributesObj(element, attributes) {
             element.setAttribute(kebabized, value);
 
         } else if (eventMap[name]) {
+            console.log('adding event listener', element, name, value);
             eventMap[name](value);
 
         } else {

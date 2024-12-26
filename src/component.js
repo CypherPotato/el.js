@@ -7,7 +7,7 @@ export function defineComponent(tagname, render) {
     if (__elCustomComponents.length == 0) {
         document.addEventListener('DOMContentLoaded', renderComponents);
     }
-    
+
     __elCustomComponents.push({ tagname: tagname.toUpperCase(), render: render });
 }
 
@@ -17,7 +17,14 @@ export function createComponentReplacement(component, element) {
 
     const newElement = component.render(elementAttrObj);
     setElementAttributesObj(newElement, elementAttrObj);
-
+    
+    // proxy events to new element
+    if (element.managedEventList) {
+        for (const event of element.managedEventList) {
+            newElement.addEventListener(event.eventName, event.listener);
+        }
+    }
+    
     return newElement;
 }
 
