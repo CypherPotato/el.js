@@ -122,7 +122,6 @@ export function setElementAttributesObj(element, attributes) {
             element.setAttribute(kebabized, value);
 
         } else if (eventMap[name]) {
-            console.log('adding event listener', element, name, value);
             eventMap[name](value);
 
         } else {
