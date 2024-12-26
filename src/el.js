@@ -2,6 +2,7 @@ import { createComponentReplacement, defineComponent, renderComponents } from ".
 import { createElementFromEmmet } from "./emmet";
 import { kebabizeAttributeName } from "./kebabize";
 import { addEventListenerStored } from "./listener";
+import * as declarativeBag from "./declarative";
 
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
@@ -34,9 +35,9 @@ export function setElementAttributesObj(element, attributes) {
     const handledMap = {
         style: value => setAttributeStyles(element, value),
         class: value => setAttributeClasses(element, value),
-        className: value => setAttributeClasses(element, value),
+        classList: value => setAttributeClasses(element, value),
     };
-
+    
     const attributeMap = {
         id: value => element.id = value,
         title: value => element.title = value,
@@ -58,7 +59,7 @@ export function setElementAttributesObj(element, attributes) {
         name: value => element.name = value,
         multiple: value => element.setAttribute('multiple', value),
         for: value => element.setAttribute('for', value),
-        
+
         src: value => element.src = value,
         alt: value => element.alt = value,
         href: value => element.href = value
@@ -246,5 +247,10 @@ el.text = function () {
 el.fragment = createFragment;
 el.defineComponent = defineComponent;
 el.scanComponents = renderComponents;
+
+el.elstore = declarativeBag;
+el.elstore.applyInto = function (obj) {
+    Object.assign(obj, declarativeBag);
+};
 
 export default el;

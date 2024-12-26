@@ -188,6 +188,58 @@ const cardElement = Card("Paris",
 
 ---
 
+Declarative syntax:
+
+```js
+// add declarative methods into window
+el.elstore.applyInto(window);
+
+const app = 
+    div(
+        {
+            classList: "container"
+        },
+        h1("My store"),
+        p("Hello, world!"),
+        p("Check below my available fruits:"),
+        ul(
+            li("Apple"),
+            li("Banana"),
+            li("Orange"),
+            li("Grapes")
+        ),
+        button(
+            "Add fruit to cart",
+            {
+                classList: "btn btn-primary",
+                onClick: function () {
+                    console.log("Fruit added to cart.");
+                }
+            }            
+        )
+    );
+
+document.getElementById("app").appendChild(app);
+```
+```html
+<div class="container">
+    <h1>My store</h1>
+    <p>Hello, world!</p>
+    <p>Check below my available fruits:</p>
+    <ul>
+        <li>Apple</li>
+        <li>Banana</li>
+        <li>Orange</li>
+        <li>Grapes</li>
+    </ul>
+    <button class="btn btn-primary">
+        Add fruit to cart
+    </button>
+</div>
+```
+
+---
+
 Raw template rendering:
 
 ```js

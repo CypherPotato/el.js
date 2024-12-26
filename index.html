@@ -10,11 +10,37 @@
 </head>
 
 <body>
+    <div id="app"></div>
     <script>
-        el.defineComponent('my-component', attr =>
-            el("p", attr.name, attr));
+        el.elstore.applyInto(window);
         
-        document.body.appendChild(el("my-component", { name: "Hello World", onClick: () => alert("clicked") }));
+        const app =
+            div(
+                {
+                    classList: "container"
+                },
+                h1("My store"),
+                p("Hello, world!"),
+                p("Check below my available fruits:"),
+                ul(
+                    li("Apple"),
+                    li("Banana"),
+                    li("Orange"),
+                    li("Grapes")
+                ),
+                button(
+                    {
+                        classList: "btn btn-primary",
+                        onClick: function () {
+                            console.log("Fruit added to cart.");
+                        }
+                    },
+                    "Add fruit to cart"
+                )
+            );
+
+        document.getElementById("app").appendChild(app);
+
     </script>
 </body>
 
