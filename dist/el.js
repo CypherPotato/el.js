@@ -1,10 +1,4 @@
 (() => {
-  var __defProp = Object.defineProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-
   // src/component.js
   window.__elCustomComponents = [];
   function defineComponent(tagname, render) {
@@ -95,251 +89,6 @@
     element.managedEventList.push({ eventName, listener });
   }
 
-  // src/declarative.js
-  var declarative_exports = {};
-  __export(declarative_exports, {
-    a: () => a,
-    area: () => area,
-    article: () => article,
-    aside: () => aside,
-    audio: () => audio,
-    blockquote: () => blockquote,
-    button: () => button,
-    canvas: () => canvas,
-    cite: () => cite,
-    col: () => col,
-    colgroup: () => colgroup,
-    details: () => details,
-    dialog: () => dialog,
-    div: () => div,
-    figcaption: () => figcaption,
-    figure: () => figure,
-    footer: () => footer,
-    form: () => form,
-    h1: () => h1,
-    h2: () => h2,
-    h3: () => h3,
-    h4: () => h4,
-    h5: () => h5,
-    h6: () => h6,
-    header: () => header,
-    hr: () => hr,
-    iframe: () => iframe,
-    img: () => img,
-    input: () => input,
-    keygen: () => keygen,
-    label: () => label,
-    li: () => li,
-    main: () => main,
-    mark: () => mark,
-    meta: () => meta,
-    meter: () => meter,
-    nav: () => nav,
-    ol: () => ol,
-    option: () => option,
-    p: () => p,
-    param: () => param,
-    progress: () => progress,
-    script: () => script,
-    section: () => section,
-    select: () => select,
-    source: () => source,
-    span: () => span,
-    summary: () => summary,
-    svg: () => svg,
-    table: () => table,
-    td: () => td,
-    template: () => template,
-    textarea: () => textarea,
-    th: () => th,
-    time: () => time,
-    title: () => title,
-    tr: () => tr,
-    track: () => track,
-    ul: () => ul,
-    video: () => video
-  });
-  function div() {
-    return el_default("div", ...arguments);
-  }
-  function span() {
-    return el_default("span", ...arguments);
-  }
-  function a() {
-    return el_default("a", ...arguments);
-  }
-  function p() {
-    return el_default("p", ...arguments);
-  }
-  function h1() {
-    return el_default("h1", ...arguments);
-  }
-  function h2() {
-    return el_default("h2", ...arguments);
-  }
-  function h3() {
-    return el_default("h3", ...arguments);
-  }
-  function h4() {
-    return el_default("h4", ...arguments);
-  }
-  function h5() {
-    return el_default("h5", ...arguments);
-  }
-  function h6() {
-    return el_default("h6", ...arguments);
-  }
-  function ul() {
-    return el_default("ul", ...arguments);
-  }
-  function ol() {
-    return el_default("ol", ...arguments);
-  }
-  function li() {
-    return el_default("li", ...arguments);
-  }
-  function img() {
-    return el_default("img", ...arguments);
-  }
-  function table() {
-    return el_default("table", ...arguments);
-  }
-  function tr() {
-    return el_default("tr", ...arguments);
-  }
-  function td() {
-    return el_default("td", ...arguments);
-  }
-  function th() {
-    return el_default("th", ...arguments);
-  }
-  function form() {
-    return el_default("form", ...arguments);
-  }
-  function input() {
-    return el_default("input", ...arguments);
-  }
-  function button() {
-    return el_default("button", ...arguments);
-  }
-  function label() {
-    return el_default("label", ...arguments);
-  }
-  function textarea() {
-    return el_default("textarea", ...arguments);
-  }
-  function select() {
-    return el_default("select", ...arguments);
-  }
-  function option() {
-    return el_default("option", ...arguments);
-  }
-  function header() {
-    return el_default("header", ...arguments);
-  }
-  function footer() {
-    return el_default("footer", ...arguments);
-  }
-  function section() {
-    return el_default("section", ...arguments);
-  }
-  function article() {
-    return el_default("article", ...arguments);
-  }
-  function aside() {
-    return el_default("aside", ...arguments);
-  }
-  function nav() {
-    return el_default("nav", ...arguments);
-  }
-  function main() {
-    return el_default("main", ...arguments);
-  }
-  function figure() {
-    return el_default("figure", ...arguments);
-  }
-  function figcaption() {
-    return el_default("figcaption", ...arguments);
-  }
-  function video() {
-    return el_default("video", ...arguments);
-  }
-  function svg() {
-    return el_default("svg", ...arguments);
-  }
-  function iframe() {
-    return el_default("iframe", ...arguments);
-  }
-  function blockquote() {
-    return el_default("blockquote", ...arguments);
-  }
-  function cite() {
-    return el_default("cite", ...arguments);
-  }
-  function time() {
-    return el_default("time", ...arguments);
-  }
-  function mark() {
-    return el_default("mark", ...arguments);
-  }
-  function progress() {
-    return el_default("progress", ...arguments);
-  }
-  function meter() {
-    return el_default("meter", ...arguments);
-  }
-  function details() {
-    return el_default("details", ...arguments);
-  }
-  function summary() {
-    return el_default("summary", ...arguments);
-  }
-  function dialog() {
-    return el_default("dialog", ...arguments);
-  }
-  function template() {
-    return el_default("template", ...arguments);
-  }
-  function script() {
-    return el_default("script", ...arguments);
-  }
-  function meta() {
-    return el_default("meta", ...arguments);
-  }
-  function title() {
-    return el_default("title", ...arguments);
-  }
-  function area() {
-    return el_default("area", ...arguments);
-  }
-  function audio() {
-    return el_default("audio", ...arguments);
-  }
-  function canvas() {
-    return el_default("canvas", ...arguments);
-  }
-  function col() {
-    return el_default("col", ...arguments);
-  }
-  function colgroup() {
-    return el_default("colgroup", ...arguments);
-  }
-  function hr() {
-    return el_default("hr", ...arguments);
-  }
-  function keygen() {
-    return el_default("keygen", ...arguments);
-  }
-  function param() {
-    return el_default("param", ...arguments);
-  }
-  function source() {
-    return el_default("source", ...arguments);
-  }
-  function track() {
-    return el_default("track", ...arguments);
-  }
-
   // src/el.js
   function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === "string") {
@@ -393,6 +142,7 @@
       href: (value) => element.href = value
     };
     const eventMap = {
+      // mouse events
       onClick: (value) => addEventListenerStored(element, "click", value),
       onMouseDown: (value) => addEventListenerStored(element, "mousedown", value),
       onMouseUp: (value) => addEventListenerStored(element, "mouseup", value),
@@ -402,9 +152,11 @@
       onMouseOver: (value) => addEventListenerStored(element, "mouseover", value),
       onMouseOut: (value) => addEventListenerStored(element, "mouseout", value),
       onWheel: (value) => addEventListenerStored(element, "wheel", value),
+      // keyboard events
       onKeyUp: (value) => addEventListenerStored(element, "keyup", value),
       onKeyDown: (value) => addEventListenerStored(element, "keydown", value),
       onKeyPress: (value) => addEventListenerStored(element, "keypress", value),
+      // form events
       onChange: (value) => addEventListenerStored(element, "change", value),
       onCancel: (value) => addEventListenerStored(element, "cancel", value),
       onInvalid: (value) => addEventListenerStored(element, "invalid", value),
@@ -412,14 +164,81 @@
       onBlur: (value) => addEventListenerStored(element, "blur", value),
       onInput: (value) => addEventListenerStored(element, "input", value),
       onSubmit: (value) => addEventListenerStored(element, "submit", value),
+      // touch events
       onTouchStart: (value) => addEventListenerStored(element, "touchstart", value),
       onTouchEnd: (value) => addEventListenerStored(element, "touchend", value),
       onTouchMove: (value) => addEventListenerStored(element, "touchmove", value),
       onTouchCancel: (value) => addEventListenerStored(element, "touchcancel", value),
+      // copy-paste events
       onCopy: (value) => addEventListenerStored(element, "copy", value),
       onCut: (value) => addEventListenerStored(element, "cut", value),
       onPaste: (value) => addEventListenerStored(element, "paste", value),
-      onScroll: (value) => addEventListenerStored(element, "scroll", value)
+      // drag-drop events
+      onDragStart: (value) => addEventListenerStored(element, "dragstart", value),
+      onDragEnd: (value) => addEventListenerStored(element, "dragend", value),
+      onDrag: (value) => addEventListenerStored(element, "drag", value),
+      onDrop: (value) => addEventListenerStored(element, "drop", value),
+      onDragOver: (value) => addEventListenerStored(element, "dragover", value),
+      onDragLeave: (value) => addEventListenerStored(element, "dragleave", value),
+      // pointer events
+      onPointerDown: (value) => addEventListenerStored(element, "pointerdown", value),
+      onPointerUp: (value) => addEventListenerStored(element, "pointerup", value),
+      onPointerMove: (value) => addEventListenerStored(element, "pointermove", value),
+      onPointerCancel: (value) => addEventListenerStored(element, "pointercancel", value),
+      onPointerEnter: (value) => addEventListenerStored(element, "pointerenter", value),
+      onPointerLeave: (value) => addEventListenerStored(element, "pointerleave", value),
+      onPointerOver: (value) => addEventListenerStored(element, "pointerover", value),
+      onPointerOut: (value) => addEventListenerStored(element, "pointerout", value),
+      // media events
+      onCanPlay: (value) => addEventListenerStored(element, "canplay", value),
+      onCanPlayThrough: (value) => addEventListenerStored(element, "canplaythrough", value),
+      onDurationChange: (value) => addEventListenerStored(element, "durationchange", value),
+      onEnded: (value) => addEventListenerStored(element, "ended", value),
+      onError: (value) => addEventListenerStored(element, "error", value),
+      onLoadStart: (value) => addEventListenerStored(element, "loadstart", value),
+      onLoadMetadata: (value) => addEventListenerStored(element, "loadmetadata", value),
+      onPause: (value) => addEventListenerStored(element, "pause", value),
+      onPlay: (value) => addEventListenerStored(element, "play", value),
+      onPlaying: (value) => addEventListenerStored(element, "playing", value),
+      onProgress: (value) => addEventListenerStored(element, "progress", value),
+      onRateChange: (value) => addEventListenerStored(element, "ratechange", value),
+      onSeeked: (value) => addEventListenerStored(element, "seeked", value),
+      onSeeking: (value) => addEventListenerStored(element, "seeking", value),
+      onStalled: (value) => addEventListenerStored(element, "stalled", value),
+      onSuspend: (value) => addEventListenerStored(element, "suspend", value),
+      onTimeUpdate: (value) => addEventListenerStored(element, "timeupdate", value),
+      onVolumeChange: (value) => addEventListenerStored(element, "volumechange", value),
+      onWaiting: (value) => addEventListenerStored(element, "waiting", value),
+      // generic events
+      onLoad: (value) => addEventListenerStored(element, "load", value),
+      onStart: (value) => addEventListenerStored(element, "start", value),
+      onEnd: (value) => addEventListenerStored(element, "end", value),
+      onAbort: (value) => addEventListenerStored(element, "abort", value),
+      onResize: (value) => addEventListenerStored(element, "resize", value),
+      onBeforeUnload: (value) => addEventListenerStored(element, "beforeunload", value),
+      onBeforeCopy: (value) => addEventListenerStored(element, "beforecopy", value),
+      onBeforeCut: (value) => addEventListenerStored(element, "beforecut", value),
+      onPlayError: (value) => addEventListenerStored(element, "playerror", value),
+      onSpeechStart: (value) => addEventListenerStored(element, "speechstart", value),
+      onSpeechEnd: (value) => addEventListenerStored(element, "speechend", value),
+      onSpeechError: (value) => addEventListenerStored(element, "speecherror", value),
+      onMessage: (value) => addEventListenerStored(element, "message", value),
+      onOffline: (value) => addEventListenerStored(element, "offline", value),
+      onOnline: (value) => addEventListenerStored(element, "online", value),
+      onPageHide: (value) => addEventListenerStored(element, "pagehide", value),
+      onPageShow: (value) => addEventListenerStored(element, "pageshow", value),
+      onPopState: (value) => addEventListenerStored(element, "popstate", value),
+      onHashChange: (value) => addEventListenerStored(element, "hashchange", value),
+      onBeforePrint: (value) => addEventListenerStored(element, "beforeprint", value),
+      onAfterPrint: (value) => addEventListenerStored(element, "afterprint", value),
+      onContextMenu: (value) => addEventListenerStored(element, "contextmenu", value),
+      onFullscreenChange: (value) => addEventListenerStored(element, "fullscreenchange", value),
+      onFullscreenError: (value) => addEventListenerStored(element, "fullscreenerror", value),
+      onOpen: (value) => addEventListenerStored(element, "open", value),
+      onClose: (value) => addEventListenerStored(element, "close", value),
+      onScroll: (value) => addEventListenerStored(element, "scroll", value),
+      // canvas events
+      onDropZoneChanged: (value) => addEventListenerStored(element, "dropzonechanged", value)
     };
     for (const attr of Object.entries(attributes)) {
       const name = attr[0];
@@ -435,7 +254,6 @@
         attributeMap[name](value);
         element.setAttribute(kebabized, value);
       } else if (eventMap[name]) {
-        console.log("adding event listener", element, name, value);
         eventMap[name](value);
       } else {
         if (value === true) {
@@ -512,9 +330,9 @@
     return result;
   };
   el.raw = function(e) {
-    var div2 = document.createElement("div");
-    div2.innerHTML = e.trim();
-    return div2.childNodes;
+    var div = document.createElement("div");
+    div.innerHTML = e.trim();
+    return div.childNodes;
   };
   el.text = function() {
     const text = [...arguments].join("");
@@ -523,10 +341,6 @@
   el.fragment = createFragment;
   el.defineComponent = defineComponent;
   el.scanComponents = renderComponents;
-  el.elstore = declarative_exports;
-  el.elstore.applyInto = function(obj) {
-    Object.assign(obj, declarative_exports);
-  };
   var el_default = el;
 
   // main.js

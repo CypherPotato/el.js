@@ -2,7 +2,6 @@ import { createComponentReplacement, defineComponent, renderComponents } from ".
 import { createElementFromEmmet } from "./emmet";
 import { kebabizeAttributeName } from "./kebabize";
 import { addEventListenerStored } from "./listener";
-import * as declarativeBag from "./declarative";
 
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
@@ -37,7 +36,7 @@ export function setElementAttributesObj(element, attributes) {
         class: value => setAttributeClasses(element, value),
         classList: value => setAttributeClasses(element, value),
     };
-    
+
     const attributeMap = {
         id: value => element.id = value,
         title: value => element.title = value,
@@ -66,6 +65,7 @@ export function setElementAttributesObj(element, attributes) {
     };
 
     const eventMap = {
+        // mouse events
         onClick: value => addEventListenerStored(element, 'click', value),
         onMouseDown: value => addEventListenerStored(element, 'mousedown', value),
         onMouseUp: value => addEventListenerStored(element, 'mouseup', value),
@@ -76,10 +76,12 @@ export function setElementAttributesObj(element, attributes) {
         onMouseOut: value => addEventListenerStored(element, 'mouseout', value),
         onWheel: value => addEventListenerStored(element, 'wheel', value),
 
+        // keyboard events
         onKeyUp: value => addEventListenerStored(element, 'keyup', value),
         onKeyDown: value => addEventListenerStored(element, 'keydown', value),
         onKeyPress: value => addEventListenerStored(element, 'keypress', value),
-
+        
+        // form events
         onChange: value => addEventListenerStored(element, 'change', value),
         onCancel: value => addEventListenerStored(element, 'cancel', value),
         onInvalid: value => addEventListenerStored(element, 'invalid', value),
@@ -88,16 +90,87 @@ export function setElementAttributesObj(element, attributes) {
         onInput: value => addEventListenerStored(element, 'input', value),
         onSubmit: value => addEventListenerStored(element, 'submit', value),
 
+        // touch events
         onTouchStart: value => addEventListenerStored(element, 'touchstart', value),
         onTouchEnd: value => addEventListenerStored(element, 'touchend', value),
         onTouchMove: value => addEventListenerStored(element, 'touchmove', value),
         onTouchCancel: value => addEventListenerStored(element, 'touchcancel', value),
 
+        // copy-paste events
         onCopy: value => addEventListenerStored(element, 'copy', value),
         onCut: value => addEventListenerStored(element, 'cut', value),
         onPaste: value => addEventListenerStored(element, 'paste', value),
 
-        onScroll: value => addEventListenerStored(element, 'scroll', value)
+        // drag-drop events
+        onDragStart: value => addEventListenerStored(element, 'dragstart', value),
+        onDragEnd: value => addEventListenerStored(element, 'dragend', value),
+        onDrag: value => addEventListenerStored(element, 'drag', value),
+        onDrop: value => addEventListenerStored(element, 'drop', value),
+        onDragOver: value => addEventListenerStored(element, 'dragover', value),
+        onDragLeave: value => addEventListenerStored(element, 'dragleave', value),
+
+        // pointer events
+        onPointerDown: value => addEventListenerStored(element, 'pointerdown', value),
+        onPointerUp: value => addEventListenerStored(element, 'pointerup', value),
+        onPointerMove: value => addEventListenerStored(element, 'pointermove', value),
+        onPointerCancel: value => addEventListenerStored(element, 'pointercancel', value),
+        onPointerEnter: value => addEventListenerStored(element, 'pointerenter', value),
+        onPointerLeave: value => addEventListenerStored(element, 'pointerleave', value),
+        onPointerOver: value => addEventListenerStored(element, 'pointerover', value),
+        onPointerOut: value => addEventListenerStored(element, 'pointerout', value),
+
+        // media events
+        onCanPlay: value => addEventListenerStored(element, 'canplay', value),
+        onCanPlayThrough: value => addEventListenerStored(element, 'canplaythrough', value),
+        onDurationChange: value => addEventListenerStored(element, 'durationchange', value),
+        onEnded: value => addEventListenerStored(element, 'ended', value),
+        onError: value => addEventListenerStored(element, 'error', value),
+        onLoadStart: value => addEventListenerStored(element, 'loadstart', value),
+        onLoadMetadata: value => addEventListenerStored(element, 'loadmetadata', value),
+        onPause: value => addEventListenerStored(element, 'pause', value),
+        onPlay: value => addEventListenerStored(element, 'play', value),
+        onPlaying: value => addEventListenerStored(element, 'playing', value),
+        onProgress: value => addEventListenerStored(element, 'progress', value),
+        onRateChange: value => addEventListenerStored(element, 'ratechange', value),
+        onSeeked: value => addEventListenerStored(element, 'seeked', value),
+        onSeeking: value => addEventListenerStored(element, 'seeking', value),
+        onStalled: value => addEventListenerStored(element, 'stalled', value),
+        onSuspend: value => addEventListenerStored(element, 'suspend', value),
+        onTimeUpdate: value => addEventListenerStored(element, 'timeupdate', value),
+        onVolumeChange: value => addEventListenerStored(element, 'volumechange', value),
+        onWaiting: value => addEventListenerStored(element, 'waiting', value),
+
+        // generic events
+        onLoad: value => addEventListenerStored(element, 'load', value),
+        onStart: value => addEventListenerStored(element, 'start', value),
+        onEnd: value => addEventListenerStored(element, 'end', value),
+        onAbort: value => addEventListenerStored(element, 'abort', value),
+        onResize: value => addEventListenerStored(element, 'resize', value),
+        onBeforeUnload: value => addEventListenerStored(element, 'beforeunload', value),
+        onBeforeCopy: value => addEventListenerStored(element, 'beforecopy', value),
+        onBeforeCut: value => addEventListenerStored(element, 'beforecut', value),
+        onPlayError: value => addEventListenerStored(element, 'playerror', value),
+        onSpeechStart: value => addEventListenerStored(element, 'speechstart', value),
+        onSpeechEnd: value => addEventListenerStored(element, 'speechend', value),
+        onSpeechError: value => addEventListenerStored(element, 'speecherror', value),
+        onMessage: value => addEventListenerStored(element, 'message', value),
+        onOffline: value => addEventListenerStored(element, 'offline', value),
+        onOnline: value => addEventListenerStored(element, 'online', value),
+        onPageHide: value => addEventListenerStored(element, 'pagehide', value),
+        onPageShow: value => addEventListenerStored(element, 'pageshow', value),
+        onPopState: value => addEventListenerStored(element, 'popstate', value),
+        onHashChange: value => addEventListenerStored(element, 'hashchange', value),
+        onBeforePrint: value => addEventListenerStored(element, 'beforeprint', value),
+        onAfterPrint: value => addEventListenerStored(element, 'afterprint', value),
+        onContextMenu: value => addEventListenerStored(element, 'contextmenu', value),
+        onFullscreenChange: value => addEventListenerStored(element, 'fullscreenchange', value),
+        onFullscreenError: value => addEventListenerStored(element, 'fullscreenerror', value),
+        onOpen: value => addEventListenerStored(element, 'open', value),
+        onClose: value => addEventListenerStored(element, 'close', value),
+        onScroll: value => addEventListenerStored(element, 'scroll', value),
+
+        // canvas events
+        onDropZoneChanged: value => addEventListenerStored(element, 'dropzonechanged', value)
     };
 
     for (const attr of Object.entries(attributes)) {
@@ -111,7 +184,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
-
+        
         } else if (handledMap[name]) {
             handledMap[name](value);
 
@@ -246,10 +319,5 @@ el.text = function () {
 el.fragment = createFragment;
 el.defineComponent = defineComponent;
 el.scanComponents = renderComponents;
-
-el.elstore = declarativeBag;
-el.elstore.applyInto = function (obj) {
-    Object.assign(obj, declarativeBag);
-};
 
 export default el;
