@@ -28,6 +28,23 @@ function setAttributeClasses(element, classes) {
         element.classList.add(cls);
 }
 
+function applyCustomFunctions(element, funcArr) {
+    if (!element || !funcArr) return;
+
+    for (const [funcName, funcFn] of Object.entries(funcArr)) {
+        const bindedFunction = funcFn.bind(element);
+        element[funcName] = bindedFunction;
+    }
+}
+
+function applyCustomProperties(element, propArr) {
+    if (!element || !propArr) return;
+
+    for (const [propName, propObject] of Object.entries(propArr)) {
+        Object.defineProperty(element, propName, propObject);
+    }
+}
+
 export function setElementAttributesObj(element, attributes) {
     if (!element || !attributes) return;
 
@@ -80,7 +97,7 @@ export function setElementAttributesObj(element, attributes) {
         onKeyUp: value => addEventListenerStored(element, 'keyup', value),
         onKeyDown: value => addEventListenerStored(element, 'keydown', value),
         onKeyPress: value => addEventListenerStored(element, 'keypress', value),
-        
+
         // form events
         onChange: value => addEventListenerStored(element, 'change', value),
         onCancel: value => addEventListenerStored(element, 'cancel', value),
@@ -184,7 +201,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
-        
+
         } else if (handledMap[name]) {
             handledMap[name](value);
 
@@ -196,6 +213,12 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (eventMap[name]) {
             eventMap[name](value);
+        
+        } else if (name == '$functions') {
+            applyCustomFunctions(element, value);
+        
+        } else if (name == '$properties') {
+            applyCustomProperties(element, value);
 
         } else {
             if (value === true) {

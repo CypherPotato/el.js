@@ -109,6 +109,19 @@
     for (const cls of classList)
       element.classList.add(cls);
   }
+  function applyCustomFunctions(element, funcArr) {
+    if (!element || !funcArr) return;
+    for (const [funcName, funcFn] of Object.entries(funcArr)) {
+      const bindedFunction = funcFn.bind(element);
+      element[funcName] = bindedFunction;
+    }
+  }
+  function applyCustomProperties(element, propArr) {
+    if (!element || !propArr) return;
+    for (const [propName, propObject] of Object.entries(propArr)) {
+      Object.defineProperty(element, propName, propObject);
+    }
+  }
   function setElementAttributesObj(element, attributes) {
     if (!element || !attributes) return;
     const handledMap = {
@@ -255,6 +268,10 @@
         element.setAttribute(kebabized, value);
       } else if (eventMap[name]) {
         eventMap[name](value);
+      } else if (name == "$functions") {
+        applyCustomFunctions(element, value);
+      } else if (name == "$properties") {
+        applyCustomProperties(element, value);
       } else {
         if (value === true) {
           element.setAttribute(kebabized, kebabized);

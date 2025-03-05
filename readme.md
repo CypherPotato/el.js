@@ -135,7 +135,7 @@ el("div", {
 
 ---
 
-Custom components:
+Inline components:
 
 ```js
 const ul = function() { return el('ul', { class: "custom-ul" }, ...arguments); }
@@ -156,7 +156,34 @@ ul(
 
 ---
 
-Custom components with arguments:
+Custom methods and properties:
+
+```js
+const element = el("div", 
+    "Hello ",
+    el("span", "World!!!"),
+    {
+        $properties: {
+            helloTargetElement: {
+                get() {
+                    return this.querySelector("span");
+                }
+            }
+        },
+        $functions: {
+            setHelloTarget(text) {
+                this.helloTargetElement.innerText = text;
+            }
+        }
+    }
+);
+
+element.helloTargetElement // <span>
+element.setHelloTarget("Big World!");
+```
+---
+
+Inline components with arguments:
 
 ```js
 const Card = function (cardTitle, ...children) {
@@ -183,58 +210,6 @@ const cardElement = Card("Paris",
             Wikipedia
         </a>
     </div>
-</div>
-```
-
----
-
-Declarative syntax:
-
-```js
-// add declarative methods into window
-el.elstore.applyInto(window);
-
-const app = 
-    div(
-        {
-            classList: "container"
-        },
-        h1("My store"),
-        p("Hello, world!"),
-        p("Check below my available fruits:"),
-        ul(
-            li("Apple"),
-            li("Banana"),
-            li("Orange"),
-            li("Grapes")
-        ),
-        button(
-            "Add fruit to cart",
-            {
-                classList: "btn btn-primary",
-                onClick: function () {
-                    console.log("Fruit added to cart.");
-                }
-            }            
-        )
-    );
-
-document.getElementById("app").appendChild(app);
-```
-```html
-<div class="container">
-    <h1>My store</h1>
-    <p>Hello, world!</p>
-    <p>Check below my available fruits:</p>
-    <ul>
-        <li>Apple</li>
-        <li>Banana</li>
-        <li>Orange</li>
-        <li>Grapes</li>
-    </ul>
-    <button class="btn btn-primary">
-        Add fruit to cart
-    </button>
 </div>
 ```
 
@@ -272,6 +247,23 @@ el(".unsafe-text", unsafeText);
 </div>
 <div class="unsafe-text">
     <p>This is unsafe.</p><script>alert('XSS')</script>
+</div>
+```
+
+---
+
+Creating a text node:
+
+```js
+el(".safe-text", 
+    el.text("Safe text"),
+    el.text("Escaped <text>"));
+```
+
+```html
+<div class="safe-text">
+    Safe text
+    Escaped &lt;text&gt;
 </div>
 ```
 

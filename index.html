@@ -12,34 +12,22 @@
 <body>
     <div id="app"></div>
     <script>
-        el.elstore.applyInto(window);
-        
-        const app =
-            div(
-                {
-                    classList: "container"
-                },
-                h1("My store"),
-                p("Hello, world!"),
-                p("Check below my available fruits:"),
-                ul(
-                    li("Apple"),
-                    li("Banana"),
-                    li("Orange"),
-                    li("Grapes")
-                ),
-                button(
-                    {
-                        classList: "btn btn-primary",
-                        onClick: function () {
-                            console.log("Fruit added to cart.");
-                        }
-                    },
-                    "Add fruit to cart"
-                )
-            );
+        const element = el("div", "Hello ", el("span", "World!!!"), {
+            $properties: {
+                helloTargetElement: {
+                    get() {
+                        return this.querySelector("span");
+                    }
+                }
+            },
+            $functions: {
+                setHelloTarget(text) {
+                    this.helloTargetElement.innerText = text;
+                }
+            }
+        });
 
-        document.getElementById("app").appendChild(app);
+        document.getElementById("app").appendChild(element);
 
     </script>
 </body>
