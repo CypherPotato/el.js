@@ -190,6 +190,7 @@ export function setElementAttributesObj(element, attributes) {
         onDropZoneChanged: value => addEventListenerStored(element, 'dropzonechanged', value)
     };
 
+    var stateFn = null;
     for (const attr of Object.entries(attributes)) {
         const name = attr[0];
         const value = attr[1];
@@ -198,10 +199,13 @@ export function setElementAttributesObj(element, attributes) {
 
         if (value === false || value == null) {
             continue;
-
+        
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
-
+        
+        } else if (name == 'init' && typeof value === 'function') {
+            stateFn = value.bind(element);
+        
         } else if (handledMap[name]) {
             handledMap[name](value);
 
@@ -213,10 +217,10 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (eventMap[name]) {
             eventMap[name](value);
-        
+
         } else if (name == '$functions') {
             applyCustomFunctions(element, value);
-        
+
         } else if (name == '$properties') {
             applyCustomProperties(element, value);
 
@@ -228,6 +232,9 @@ export function setElementAttributesObj(element, attributes) {
             }
         }
     }
+
+    if (stateFn)
+        stateFn();
 }
 
 function createFragment() {
@@ -237,7 +244,7 @@ function createFragment() {
 
         const argType = typeof arg;
 
-        // skip false, null
+        //     skip false, null
         if (arg == null || arg === false) {
             return;
 

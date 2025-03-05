@@ -253,6 +253,7 @@
       // canvas events
       onDropZoneChanged: (value) => addEventListenerStored(element, "dropzonechanged", value)
     };
+    var stateFn = null;
     for (const attr of Object.entries(attributes)) {
       const name = attr[0];
       const value = attr[1];
@@ -261,6 +262,8 @@
         continue;
       } else if (name == "slot" && value instanceof NodeList) {
         continue;
+      } else if (name == "init" && typeof value === "function") {
+        stateFn = value.bind(element);
       } else if (handledMap[name]) {
         handledMap[name](value);
       } else if (attributeMap[name]) {
@@ -280,6 +283,8 @@
         }
       }
     }
+    if (stateFn)
+      stateFn();
   }
   function createFragment() {
     const fragment = document.createDocumentFragment();

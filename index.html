@@ -13,6 +13,10 @@
     <div id="app"></div>
     <script>
         const element = el("div", "Hello ", el("span", "World!!!"), {
+            init() {
+                console.log("Element created!");
+                this.setHelloTarget("Big World!");
+            },
             $properties: {
                 helloTargetElement: {
                     get() {
