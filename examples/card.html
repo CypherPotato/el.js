@@ -26,7 +26,7 @@
             const title = attr.title && el("div.card-title", attr.title);
             const img = attr.imgsrc && el("img.card-img", { src: attr.imgsrc });
 
-            return el("div.card",
+            return el.fragment(
                 title,
                 img,
                 el(".card-body", ...attr.slot));

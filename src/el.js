@@ -39,15 +39,15 @@ function applyCustomFunctions(element, funcArr) {
 
 function applyCustomProperties(element, propArr) {
     if (!element || !propArr) return;
-
+    
     for (const [propName, propObject] of Object.entries(propArr)) {
         Object.defineProperty(element, propName, propObject);
     }
 }
 
 export function setElementAttributesObj(element, attributes) {
-    if (!element || !attributes) return;
-
+    if (!element || !(element instanceof HTMLElement) || !attributes) return;
+    
     const handledMap = {
         style: value => setAttributeStyles(element, value),
         class: value => setAttributeClasses(element, value),
@@ -211,7 +211,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (attributeMap[name]) {
             attributeMap[name](value);
-
+            
             // also set the attribute directly as a fallback
             element.setAttribute(kebabized, value);
 
@@ -220,7 +220,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (name == '$functions') {
             applyCustomFunctions(element, value);
-
+        
         } else if (name == '$properties') {
             applyCustomProperties(element, value);
 
