@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.min.js"></script>
+</head>
+
+<body>
+    <card title="São Paulo" imgsrc="https://picsum.photos/200/300">
+        <p>
+            São Paulo is the largest city in Brazil. It is the economic, cultural, and financial
+            center of the country. It is also the capital of the largest state in Brazil, São Paulo.
+            It is located in the south of Brazil, in the delta region of the Atlantic Ocean.
+        </p>
+        <a href="https://pt.wikipedia.org/wiki/S%C3%A3o_Paulo">
+            Click to see more
+        </a>
+    </card>
+
+    <script>
+        el.defineComponent("card", attr => {
+            const title = attr.title && el("div.card-title", attr.title);
+            const img = attr.imgsrc && el("img.card-img", { src: attr.imgsrc });
+
+            return el("div.card",
+                title,
+                img,
+                el(".card-body", ...attr.slot));
+        });
+    </script>
+
+    <style>
+        .card {
+            width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background-color: #fff;
+            margin: 16px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-body {
+            padding: 8px;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .card-body a {
+            display: block;
+            padding: 6px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .card-body a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</body>
+
+</html>

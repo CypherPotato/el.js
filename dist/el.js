@@ -309,6 +309,25 @@
     }
     return fragment;
   }
+  function createRawEscapedNode(strings, ...values) {
+    var result = strings[0];
+    for (let i = 0; i < values.length; i++) {
+      result += escapeUnsafeHtml(values[i]) + strings[i + 1];
+    }
+    return createUnsafeNode(result);
+  }
+  function createUnsafeNode() {
+    var div = document.createElement("div");
+    div.innerHTML = [...arguments].join("").trim();
+    return createFragment(...div.childNodes);
+  }
+  function createTextNode() {
+    const text = [...arguments].join("");
+    return document.createTextNode(text);
+  }
+  function escapeUnsafeHtml() {
+    return [...arguments].join("").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
   var el = function() {
     function setArgElement(arg, element) {
       const argType = typeof arg;
@@ -351,15 +370,10 @@
     }
     return result;
   };
-  el.raw = function(e) {
-    var div = document.createElement("div");
-    div.innerHTML = e.trim();
-    return div.childNodes;
-  };
-  el.text = function() {
-    const text = [...arguments].join("");
-    return document.createTextNode(text);
-  };
+  el.format = createRawEscapedNode;
+  el.raw = createUnsafeNode;
+  el.text = createTextNode;
+  el.escapeHtmlLiteral = escapeUnsafeHtml;
   el.fragment = createFragment;
   el.defineComponent = defineComponent;
   el.scanComponents = renderComponents;

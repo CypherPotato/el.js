@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.min.js"></script>
+</head>
+
+<body>
+    <counter value="10"></counter>
+
+    <script>
+        el.defineComponent("counter", attr => {
+            
+            var counterWrapper;
+            var countingElement;
+            
+            return el("div.counter",
+                {
+                    init() {
+                        counterWrapper = this;
+                    },
+                    $properties: {
+                        value: {
+                            get() {
+                                return parseInt(countingElement.innerText);
+                            },
+                            set(value) {
+                                if (typeof value !== "number")
+                                    return;
+                                
+                                countingElement.innerText = value;
+                            }
+                        }
+                    }
+                },
+                el("span",
+                    "Current count: ",
+                    el("b",
+                        attr.value ?? "0",
+                        {
+                            init() { countingElement = this; }
+                        })),
+                el("menu",
+                    el("button", "Increment", { onClick() { counterWrapper.value++; } }),
+                    el("button", "Decrement", { onClick() { counterWrapper.value--; } })));
+        });
+    </script>
+</body>
+
+</html>

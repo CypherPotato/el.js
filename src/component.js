@@ -7,7 +7,7 @@ export function defineComponent(tagname, render) {
     if (__elCustomComponents.length == 0) {
         document.addEventListener('DOMContentLoaded', renderComponents);
     }
-
+    
     __elCustomComponents.push({ tagname: tagname.toUpperCase(), render: render });
 }
 

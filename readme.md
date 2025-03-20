@@ -235,19 +235,23 @@ el("div", el.raw(`
 Unsafe/safe text escaping:
 
 ```js
-const safeText = "<p>This is secure.</p> <script>alert('XSS')</script>";
-const unsafeText = el.raw("<p>This is unsafe.</p> <script>alert('XSS')</script>");
+// strings are automatically escaped when used with el()
+const unsafeText = "<p>This is secure.</p> <script>alert('XSS')</script>";
 
-el(".safe-text", safeText);
-el(".unsafe-text", unsafeText);
-```
-```html
-<div class="safe-text">
-    &lt;p&gt;This is secure.&lt;/p&gt; &lt;script&gt;alert('XSS')&lt;/script&gt;
-</div>
-<div class="unsafe-text">
-    <p>This is unsafe.</p><script>alert('XSS')</script>
-</div>
+// el.raw creates an fragment with the specified unsafe, non-scapped HTML
+const unsafeNode = el.raw("<p>This is unsafe.</p> <script>alert('XSS')</script>");
+
+// el.escapeHtmlLiteral escapes the given string, making it safe to use, and returns
+// another string
+const replacedText = el.escapeHtmlLiteral(unsafeText);
+
+// el.format creates an fragment and automatically escapes the template
+// literals
+const renderedNode = el.format`
+    <div>
+        ${unsafeText}
+    </div>
+`;
 ```
 
 ---
