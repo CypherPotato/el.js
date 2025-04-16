@@ -24,8 +24,11 @@ function setAttributeClasses(element, classes) {
         classList = [];
     }
 
-    for (const cls of classList)
-        element.classList.add(cls);
+    for (const cls of classList) {
+        for (const splitted of cls.split(' ')) {
+            element.classList.add(splitted);
+        }
+    }
 }
 
 function applyCustomFunctions(element, funcArr) {
@@ -39,7 +42,7 @@ function applyCustomFunctions(element, funcArr) {
 
 function applyCustomProperties(element, propArr) {
     if (!element || !propArr) return;
-    
+
     for (const [propName, propObject] of Object.entries(propArr)) {
         Object.defineProperty(element, propName, propObject);
     }
@@ -47,7 +50,7 @@ function applyCustomProperties(element, propArr) {
 
 export function setElementAttributesObj(element, attributes) {
     if (!element || !(element instanceof HTMLElement) || !attributes) return;
-    
+
     const handledMap = {
         style: value => setAttributeStyles(element, value),
         class: value => setAttributeClasses(element, value),
@@ -92,6 +95,8 @@ export function setElementAttributesObj(element, attributes) {
         onMouseOver: value => addEventListenerStored(element, 'mouseover', value),
         onMouseOut: value => addEventListenerStored(element, 'mouseout', value),
         onWheel: value => addEventListenerStored(element, 'wheel', value),
+        onDblClick: value => addEventListenerStored(element, 'dblclick', value),
+        onAuxClick: (value) => addEventListenerStored(element, "auxclick", value),
 
         // keyboard events
         onKeyUp: value => addEventListenerStored(element, 'keyup', value),
@@ -187,31 +192,50 @@ export function setElementAttributesObj(element, attributes) {
         onScroll: value => addEventListenerStored(element, 'scroll', value),
 
         // canvas events
-        onDropZoneChanged: value => addEventListenerStored(element, 'dropzonechanged', value)
-    };
+        onDropZoneChanged: value => addEventListenerStored(element, 'dropzonechanged', value),
 
+        // other events
+        onBeforeMatch: (value) => addEventListenerStored(element, "beforematch", value),
+        onBeforeToggle: (value) => addEventListenerStored(element, "beforetoggle", value),
+        onContextLost: (value) => addEventListenerStored(element, "contextlost", value),
+        onContextRestored: (value) => addEventListenerStored(element, "contextrestored", value),
+        onLanguageChange: (value) => addEventListenerStored(element, "languagechange", value),
+        onLoadedData: (value) => addEventListenerStored(element, "loadeddata", value),
+        onMessageError: (value) => addEventListenerStored(element, "messageerror", value),
+        onRejectionHandled: (value) => addEventListenerStored(element, "rejectionhandled", value),
+        onCueChange: (value) => addEventListenerStored(element, "cuechange", value),
+        onFormData: (value) => addEventListenerStored(element, "formdata", value),
+        onReset: (value) => addEventListenerStored(element, "reset", value),
+        onScrollEnd: (value) => addEventListenerStored(element, "scrollend", value),
+        onSecurityPolicyViolation: (value) => addEventListenerStored(element, "securitypolicyviolation", value),
+        onSlotChange: (value) => addEventListenerStored(element, "slotchange", value),
+        onStorage: (value) => addEventListenerStored(element, "storage", value),
+        onToggle: (value) => addEventListenerStored(element, "toggle", value),
+        onUnhandledRejection: (value) => addEventListenerStored(element, "unhandledrejection", value),
+    };
+    
     var stateFn = null;
     for (const attr of Object.entries(attributes)) {
         const name = attr[0];
         const value = attr[1];
 
         const kebabized = kebabizeAttributeName(name);
-
+        
         if (value === false || value == null) {
             continue;
-
+        
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
-        
+
         } else if (name == 'init' && typeof value === 'function') {
             stateFn = value.bind(element);
-        
+
         } else if (handledMap[name]) {
             handledMap[name](value);
 
         } else if (attributeMap[name]) {
             attributeMap[name](value);
-            
+
             // also set the attribute directly as a fallback
             element.setAttribute(kebabized, value);
 
@@ -232,7 +256,7 @@ export function setElementAttributesObj(element, attributes) {
             }
         }
     }
-
+    
     if (stateFn)
         stateFn();
 }
@@ -340,7 +364,7 @@ const el = function () {
 
     } else if (arguments.length === 1) {
         result = createElementFromEmmet(arguments[0]);
-    
+
     } else {
         const element = createElementFromEmmet(arguments[0]);
 
@@ -359,7 +383,7 @@ const el = function () {
             }
         }
     }
-    
+
     return result;
 };
 

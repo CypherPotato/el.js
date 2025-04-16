@@ -1,6 +1,6 @@
 {
     "name": "@cypherpotato/el",
-    "version": "0.7.4",
+    "version": "0.7.5",
     "description": "a tiny tool to create HTMLElements on the fly",
     "keywords": [
         "dom",

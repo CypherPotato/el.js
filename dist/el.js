@@ -106,8 +106,11 @@
     } else {
       classList = [];
     }
-    for (const cls of classList)
-      element.classList.add(cls);
+    for (const cls of classList) {
+      for (const splitted of cls.split(" ")) {
+        element.classList.add(splitted);
+      }
+    }
   }
   function applyCustomFunctions(element, funcArr) {
     if (!element || !funcArr) return;
@@ -165,6 +168,8 @@
       onMouseOver: (value) => addEventListenerStored(element, "mouseover", value),
       onMouseOut: (value) => addEventListenerStored(element, "mouseout", value),
       onWheel: (value) => addEventListenerStored(element, "wheel", value),
+      onDblClick: (value) => addEventListenerStored(element, "dblclick", value),
+      onAuxClick: (value) => addEventListenerStored(element, "auxclick", value),
       // keyboard events
       onKeyUp: (value) => addEventListenerStored(element, "keyup", value),
       onKeyDown: (value) => addEventListenerStored(element, "keydown", value),
@@ -251,7 +256,25 @@
       onClose: (value) => addEventListenerStored(element, "close", value),
       onScroll: (value) => addEventListenerStored(element, "scroll", value),
       // canvas events
-      onDropZoneChanged: (value) => addEventListenerStored(element, "dropzonechanged", value)
+      onDropZoneChanged: (value) => addEventListenerStored(element, "dropzonechanged", value),
+      // other events
+      onBeforeMatch: (value) => addEventListenerStored(element, "beforematch", value),
+      onBeforeToggle: (value) => addEventListenerStored(element, "beforetoggle", value),
+      onContextLost: (value) => addEventListenerStored(element, "contextlost", value),
+      onContextRestored: (value) => addEventListenerStored(element, "contextrestored", value),
+      onLanguageChange: (value) => addEventListenerStored(element, "languagechange", value),
+      onLoadedData: (value) => addEventListenerStored(element, "loadeddata", value),
+      onMessageError: (value) => addEventListenerStored(element, "messageerror", value),
+      onRejectionHandled: (value) => addEventListenerStored(element, "rejectionhandled", value),
+      onCueChange: (value) => addEventListenerStored(element, "cuechange", value),
+      onFormData: (value) => addEventListenerStored(element, "formdata", value),
+      onReset: (value) => addEventListenerStored(element, "reset", value),
+      onScrollEnd: (value) => addEventListenerStored(element, "scrollend", value),
+      onSecurityPolicyViolation: (value) => addEventListenerStored(element, "securitypolicyviolation", value),
+      onSlotChange: (value) => addEventListenerStored(element, "slotchange", value),
+      onStorage: (value) => addEventListenerStored(element, "storage", value),
+      onToggle: (value) => addEventListenerStored(element, "toggle", value),
+      onUnhandledRejection: (value) => addEventListenerStored(element, "unhandledrejection", value)
     };
     var stateFn = null;
     for (const attr of Object.entries(attributes)) {
