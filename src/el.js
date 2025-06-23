@@ -5,6 +5,32 @@ import { addEventListenerStored } from "./listener";
 import { createState } from "./state";
 import { createStyle } from "./style";
 
+function detectMount(element, callback) {
+    if (document.body.contains(element)) {
+        callback(element);
+        return;
+    }
+
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                for (const addedNode of mutation.addedNodes) {
+                    if (addedNode === element || addedNode.contains(element)) {
+                        callback(addedNode);
+                        observer.disconnect();
+                        return;
+                    }
+                }
+            }
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
         element.style.cssText = styleObj;
@@ -225,12 +251,15 @@ export function setElementAttributesObj(element, attributes) {
 
         if (value === false || value == null) {
             continue;
-
+        
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
 
         } else if (name == 'init' && typeof value === 'function') {
             stateFn = value.bind(element);
+
+        } else if (name == 'mount' && typeof value === 'function') {
+            detectMount(element, x => value.bind(element)(x));
 
         } else if (handledMap[name]) {
             handledMap[name](value);
@@ -377,7 +406,7 @@ const el = function () {
 
         result = element;
     }
-    
+
     if (window.__elCustomComponents) {
         for (const component of window.__elCustomComponents) {
             if (component.tagname == result.tagName) {
@@ -415,5 +444,7 @@ el.style = createStyle;
 
 el.defineComponent = defineComponent;
 el.scanComponents = renderComponents;
+
+el.detectMount = detectMount;
 
 export default el;

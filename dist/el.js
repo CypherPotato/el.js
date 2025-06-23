@@ -136,6 +136,29 @@
   }
 
   // src/el.js
+  function detectMount(element, callback) {
+    if (document.body.contains(element)) {
+      callback(element);
+      return;
+    }
+    const observer = new MutationObserver((mutationsList, observer2) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          for (const addedNode of mutation.addedNodes) {
+            if (addedNode === element || addedNode.contains(element)) {
+              callback(addedNode);
+              observer2.disconnect();
+              return;
+            }
+          }
+        }
+      }
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
   function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === "string") {
       element.style.cssText = styleObj;
@@ -333,6 +356,8 @@
         continue;
       } else if (name == "init" && typeof value === "function") {
         stateFn = value.bind(element);
+      } else if (name == "mount" && typeof value === "function") {
+        detectMount(element, (x) => value.bind(element)(x));
       } else if (handledMap[name]) {
         handledMap[name](value);
       } else if (attributeMap[name]) {
@@ -463,6 +488,7 @@
   el.style = createStyle;
   el.defineComponent = defineComponent;
   el.scanComponents = renderComponents;
+  el.detectMount = detectMount;
   var el_default = el;
 
   // main.js
