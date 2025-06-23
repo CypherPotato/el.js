@@ -89,6 +89,52 @@
     element.managedEventList.push({ eventName, listener });
   }
 
+  // src/state.js
+  function createState(initialState) {
+    var state = initialState;
+    var listeners = [];
+    var result = {};
+    Object.defineProperty(result, "value", {
+      get() {
+        return state;
+      },
+      set(newState) {
+        state = newState;
+        for (const listener of listeners) {
+          listener(state);
+        }
+      }
+    });
+    result.subscribe = (listener) => {
+      listeners.push(listener);
+    };
+    return result;
+  }
+
+  // src/style.js
+  function createStyle(styleObj) {
+    const style = document.createElement("style");
+    var indentSize = 0;
+    var styleCss = "";
+    const getIndent = () => Array(indentSize).fill(" ").join("");
+    const runObject = (obj) => {
+      for (const [prop, value] of Object.entries(obj)) {
+        if (typeof value === "string") {
+          styleCss += getIndent() + kebabizeAttributeName(prop) + ": " + value + ";\n";
+        } else if (typeof value === "object") {
+          styleCss += getIndent() + prop + " {\n";
+          indentSize++;
+          runObject(value);
+          indentSize--;
+          styleCss += getIndent() + "}\n";
+        }
+      }
+    };
+    runObject(styleObj);
+    style.textContent = styleCss;
+    return style;
+  }
+
   // src/el.js
   function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === "string") {
@@ -393,11 +439,28 @@
     }
     return result;
   };
+  el.state = {
+    create(init) {
+      return createState(init);
+    },
+    listening(stateList, listener) {
+      var firstIteration = listener();
+      for (const state of stateList) {
+        state.subscribe(() => {
+          var newIteration = listener();
+          firstIteration.replaceWith(newIteration);
+          firstIteration = newIteration;
+        });
+      }
+      return firstIteration;
+    }
+  };
   el.format = createRawEscapedNode;
   el.raw = createUnsafeNode;
   el.text = createTextNode;
   el.escapeHtmlLiteral = escapeUnsafeHtml;
   el.fragment = createFragment;
+  el.style = createStyle;
   el.defineComponent = defineComponent;
   el.scanComponents = renderComponents;
   var el_default = el;

@@ -2,6 +2,8 @@ import { createComponentReplacement, defineComponent, renderComponents } from ".
 import { createElementFromEmmet } from "./emmet";
 import { kebabizeAttributeName } from "./kebabize";
 import { addEventListenerStored } from "./listener";
+import { createState } from "./state";
+import { createStyle } from "./style";
 
 function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
@@ -213,17 +215,17 @@ export function setElementAttributesObj(element, attributes) {
         onToggle: (value) => addEventListenerStored(element, "toggle", value),
         onUnhandledRejection: (value) => addEventListenerStored(element, "unhandledrejection", value),
     };
-    
+
     var stateFn = null;
     for (const attr of Object.entries(attributes)) {
         const name = attr[0];
         const value = attr[1];
 
         const kebabized = kebabizeAttributeName(name);
-        
+
         if (value === false || value == null) {
             continue;
-        
+
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
 
@@ -244,7 +246,7 @@ export function setElementAttributesObj(element, attributes) {
 
         } else if (name == '$functions') {
             applyCustomFunctions(element, value);
-        
+
         } else if (name == '$properties') {
             applyCustomProperties(element, value);
 
@@ -256,7 +258,7 @@ export function setElementAttributesObj(element, attributes) {
             }
         }
     }
-    
+
     if (stateFn)
         stateFn();
 }
@@ -375,7 +377,7 @@ const el = function () {
 
         result = element;
     }
-
+    
     if (window.__elCustomComponents) {
         for (const component of window.__elCustomComponents) {
             if (component.tagname == result.tagName) {
@@ -387,11 +389,29 @@ const el = function () {
     return result;
 };
 
+el.state = {
+    create(init) {
+        return createState(init);
+    },
+    listening(stateList, listener) {
+        var firstIteration = listener();
+        for (const state of stateList) {
+            state.subscribe(() => {
+                var newIteration = listener();
+                firstIteration.replaceWith(newIteration);
+                firstIteration = newIteration;
+            });
+        }
+        return firstIteration;
+    }
+}
+
 el.format = createRawEscapedNode;
 el.raw = createUnsafeNode;
 el.text = createTextNode;
 el.escapeHtmlLiteral = escapeUnsafeHtml;
 el.fragment = createFragment;
+el.style = createStyle;
 
 el.defineComponent = defineComponent;
 el.scanComponents = renderComponents;

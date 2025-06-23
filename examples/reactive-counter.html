@@ -10,44 +10,22 @@
 </head>
 
 <body>
-    <counter value="10"></counter>
-
+    <div>
+        Can you vote?
+    </div>
+    <counter count="10"></counter>
+    
     <script>
-        el.defineComponent("counter", attr => {
-            
-            var counterWrapper;
-            var countingElement;
-            
-            return el("div.counter",
-                {
-                    init() {
-                        counterWrapper = this;
-                    },
-                    $properties: {
-                        value: {
-                            get() {
-                                return parseInt(countingElement.innerText);
-                            },
-                            set(value) {
-                                if (typeof value !== "number")
-                                    return;
-                                
-                                countingElement.innerText = value;
-                            }
-                        }
-                    }
-                },
-                el("span",
-                    "Current count: ",
-                    el("b",
-                        attr.value ?? "0",
-                        {
-                            init() { countingElement = this; }
-                        })),
-                el("menu",
-                    el("button", "Increment", { onClick() { counterWrapper.value++; } }),
-                    el("button", "Decrement", { onClick() { counterWrapper.value--; } })));
-        });
+        el.defineReactiveComponent('counter', state =>
+            el("div.counter",
+                el('div', 'Current: ', state.count),
+                state.count < 18 && el("span", "You're too young to vote!"),
+                el('menu',
+                    el('button', { onClick() { state.count++ } }, 'Increment'),
+                    el('button', { onClick() { state.count-- } }, 'Decrement')
+                )
+            )
+        );
     </script>
 </body>
 

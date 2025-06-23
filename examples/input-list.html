@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.min.js"></script>
+</head>
+
+<body>
+    <input-list id="test"></input-list>
+</body>
+<script>
+    el.defineComponent('input-list', args => {
+
+        const items = el.state.create([]);
+        var input;
+
+        function removeItem(item) {
+            items.value = items.value.filter(i => i != item);
+        }
+
+        function addItem(item) {
+            items.value = [...items.value, item];
+            input.value = "";
+        }
+        
+        return el.state.listening([items], () =>
+            el("div.input-list", args,
+                el.style({
+                    ".input-list": {
+                        width: "300px",
+                        border: "1px solid black",
+
+                        "> .input-item": {
+                            display: "flex",
+                            alignItems: "center"
+                        }
+                    }
+                }),
+                el.text("Input list:"),
+                el("div",
+                    items.value.map(item =>
+                        el("div.input-item", item,
+                            el("button", "X", { onClick() { removeItem(item); } })))
+                ),
+                el.text("Quantia de items: ", items.value.length),
+                el("div.input-list-menu",
+                    el("input", { init() { input = this; } }),
+                    el("button", "Add", { onClick() { addItem(input.value); } })
+                ),
+                {
+                    $properties: {
+                        items: {
+                            get() { return items.value; },
+                            set(newItems) { items.value = newItems; }
+                        }
+                    }
+                }
+            ));
+    })
+</script>
+
+</html>

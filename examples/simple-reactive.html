@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.min.js"></script>
+</head>
+
+<body>
+    <hello for="World"></hello>
+</body>
+<script>
+    el.defineComponent('hello', args => {
+        
+        var name = el.state.create(args.for || "world");
+        
+        return el.state.listening([name],
+            () => el("div",
+                "Hello, ", name.value,
+                {
+                    $properties: {
+                        for: {
+                            get() { return name.value; },
+                            set(newName) { name.value = newName; }
+                        }
+                    }
+                }));
+    })
+</script>
+
+</html>
