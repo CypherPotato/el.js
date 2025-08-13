@@ -94,20 +94,44 @@
     var state = initialState;
     var listeners = [];
     var result = {};
-    Object.defineProperty(result, "value", {
-      get() {
-        return state;
+    Object.defineProperties(result, {
+      value: {
+        get() {
+          return state;
+        },
+        set(newState2) {
+          state = newState2;
+          if (result.requestUpdate)
+            result.requestUpdate();
+        }
       },
-      set(newState) {
-        state = newState;
-        for (const listener of listeners) {
-          listener(state);
+      initialValue: {
+        get() {
+          return initialState;
         }
       }
     });
     result.subscribe = (listener) => {
       listeners.push(listener);
     };
+    result.unsubscribe = (listener) => {
+      listeners = listeners.filter((l) => l !== listener);
+    };
+    result.clearSubscriptions = () => {
+      listeners.length = 0;
+    };
+    result.requestUpdate = () => {
+      for (const listener of listeners) {
+        listener(state);
+      }
+    };
+    result.reset = () => {
+      state = newState;
+      if (result.requestUpdate)
+        result.requestUpdate();
+    };
+    result[0] = () => state.value;
+    result[1] = (newValue) => state.value = newValue;
     return result;
   }
 
@@ -478,6 +502,11 @@
         });
       }
       return firstIteration;
+    },
+    resetAll(...stateList) {
+      for (const state of stateList) {
+        state.value = state.initialValue;
+      }
     }
   };
   el.format = createRawEscapedNode;

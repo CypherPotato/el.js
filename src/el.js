@@ -154,6 +154,7 @@ export function setElementAttributesObj(element, attributes) {
         // drag-drop events
         onDragStart: value => addEventListenerStored(element, 'dragstart', value),
         onDragEnd: value => addEventListenerStored(element, 'dragend', value),
+        onDragEnter: value => addEventListenerStored(element, 'dragenter', value),
         onDrag: value => addEventListenerStored(element, 'drag', value),
         onDrop: value => addEventListenerStored(element, 'drop', value),
         onDragOver: value => addEventListenerStored(element, 'dragover', value),
@@ -211,6 +212,10 @@ export function setElementAttributesObj(element, attributes) {
         onPopState: value => addEventListenerStored(element, 'popstate', value),
         onHashChange: value => addEventListenerStored(element, 'hashchange', value),
         onBeforePrint: value => addEventListenerStored(element, 'beforeprint', value),
+        onBeforeInput: value => addEventListenerStored(element, 'beforeinput', value),
+        onBeforeCut: value => addEventListenerStored(element, 'beforecut', value),
+        onBeforePaste: value => addEventListenerStored(element, 'beforepaste', value),
+        onCut: value => addEventListenerStored(element, 'cut', value),
         onAfterPrint: value => addEventListenerStored(element, 'afterprint', value),
         onContextMenu: value => addEventListenerStored(element, 'contextmenu', value),
         onFullscreenChange: value => addEventListenerStored(element, 'fullscreenchange', value),
@@ -218,6 +223,17 @@ export function setElementAttributesObj(element, attributes) {
         onOpen: value => addEventListenerStored(element, 'open', value),
         onClose: value => addEventListenerStored(element, 'close', value),
         onScroll: value => addEventListenerStored(element, 'scroll', value),
+
+        // composition events
+        onCompositionEnd: value => addEventListenerStored(element, 'compositionend', value),
+        onCompositionStart: value => addEventListenerStored(element, 'compositionstart', value),
+        onCompositionUpdate: value => addEventListenerStored(element, 'compositionupdate', value),
+
+        // transition and animation events
+        onTransitionEnd: value => addEventListenerStored(element, 'transitionend', value),
+        onAnimationEnd: value => addEventListenerStored(element, 'animationend', value),
+        onAnimationIteration: value => addEventListenerStored(element, 'animationiteration', value),
+        onAnimationStart: value => addEventListenerStored(element, 'animationstart', value),
 
         // canvas events
         onDropZoneChanged: value => addEventListenerStored(element, 'dropzonechanged', value),
@@ -239,6 +255,9 @@ export function setElementAttributesObj(element, attributes) {
         onSlotChange: (value) => addEventListenerStored(element, "slotchange", value),
         onStorage: (value) => addEventListenerStored(element, "storage", value),
         onToggle: (value) => addEventListenerStored(element, "toggle", value),
+        onSearch: (value) => addEventListenerStored(element, "search", value),
+        onAbort: (value) => addEventListenerStored(element, "abort", value),
+        onPaint: (value) => addEventListenerStored(element, "paint", value),
         onUnhandledRejection: (value) => addEventListenerStored(element, "unhandledrejection", value),
     };
 
@@ -248,10 +267,10 @@ export function setElementAttributesObj(element, attributes) {
         const value = attr[1];
 
         const kebabized = kebabizeAttributeName(name);
-
+        
         if (value === false || value == null) {
             continue;
-        
+
         } else if (name == 'slot' && value instanceof NodeList) {
             continue;
 
@@ -432,6 +451,11 @@ el.state = {
             });
         }
         return firstIteration;
+    },
+    resetAll(...stateList) {
+        for (const state of stateList) {
+            state.value = state.initialValue;
+        }
     }
 }
 
