@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+    const state = el.state.pooling(() => new Date().toISOString(), {
+        interval: 50
+    })
+
+    const timer = el("div",
+        el("span", "Current time: "),
+        el.state.listening([state], () => el("time", state.value, { style: "font-weight: bold;" }))
+    )
+
+    document.body.appendChild(timer);
+</script>
+
+</html>

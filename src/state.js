@@ -1,9 +1,40 @@
+const poolingStateSet = [];
+
+export function clearAllPoolingStates() {
+    for (const intervalId of poolingStateSet) {
+        clearInterval(intervalId);
+    }
+    poolingStateSet.length = 0;
+}
+
+export function poolingState(func, poolOptions) {
+    const innerState = createState(null);
+    innerState.value = func(innerState);
+
+    const poolInterval = poolOptions?.interval || 500;
+
+    const intervalId = setInterval(async () => {
+        innerState.value = func(innerState);
+    }, poolInterval);
+
+    poolingStateSet.push(intervalId)
+
+    Object.defineProperty(innerState, 'innerIntervalId', {
+        get() {
+            return intervalId;
+        }
+    });
+
+    return innerState;
+}
+
 export function createState(initialState) {
     var state = initialState;
     var listeners = [];
-    
+
     var modified = false;
     var result = {};
+
     Object.defineProperties(result, {
         value: {
             get() {
@@ -47,7 +78,7 @@ export function createState(initialState) {
         if (result.requestUpdate)
             result.requestUpdate();
     }
-    
+
     result[0] = () => state.value;
     result[1] = (newValue) => state.value = newValue;
 

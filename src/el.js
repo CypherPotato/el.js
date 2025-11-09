@@ -2,7 +2,7 @@ import { createComponentReplacement, defineComponent, renderComponents } from ".
 import { createElementFromEmmet } from "./emmet";
 import { kebabizeAttributeName } from "./kebabize";
 import { addEventListenerStored } from "./listener";
-import { createState } from "./state";
+import { clearAllPoolingStates, createState, poolingState } from "./state";
 import { createStyle } from "./style";
 
 function detectMount(element, callback) {
@@ -267,7 +267,7 @@ export function setElementAttributesObj(element, attributes) {
         const value = attr[1];
 
         const kebabized = kebabizeAttributeName(name);
-        
+
         if (value === false || value == null) {
             continue;
 
@@ -456,6 +456,12 @@ el.state = {
         for (const state of stateList) {
             state.value = state.initialValue;
         }
+    },
+    pooling(initialState, poolOptions) {
+        return poolingState(initialState, poolOptions);
+    },
+    clearAllPoolingStates() {
+        clearAllPoolingStates();
     }
 }
 

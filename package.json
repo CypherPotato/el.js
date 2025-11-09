@@ -1,6 +1,6 @@
 {
     "name": "@cypherpotato/el",
-    "version": "0.9",
+    "version": "1.0",
     "description": "a tiny tool to create HTMLElements on the fly",
     "keywords": [
         "dom",
@@ -18,10 +18,7 @@
     "main": "src/el.js",
     "type": "module",
     "scripts": {
-        "build": "node build.js"
+        "pack": "bun build --outfile=dist/el.js ./main.js && bun build --minify --outfile=dist/el.min.js ./main.js"
     },
-    "license": "MIT",
-    "devDependencies": {
-        "esbuild": "^0.24.0"
-    }
+    "license": "MIT"
 }
