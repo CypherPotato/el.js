@@ -102,7 +102,10 @@ function poolingState(func, poolOptions) {
   innerState.value = func(innerState);
   const poolInterval = poolOptions?.interval || 500;
   const intervalId = setInterval(async () => {
-    innerState.value = func(innerState);
+    var currentValue = innerState.value;
+    var newValue = func(currentValue);
+    if (newValue !== currentValue)
+      innerState.value = newValue;
   }, poolInterval);
   poolingStateSet.push(intervalId);
   Object.defineProperty(innerState, "innerIntervalId", {
