@@ -25,7 +25,7 @@ import el from '@cypherpotato/el';
 ## Usage
 
 ```js
-el("tag-name", ... [children|attributes]);
+el("emmet-literal", ... [children|attributes]) -> HTMLElement
 ```
 
 The `el()` method is used with one or more arguments. The first argument is always the tag of the HTML element, and the other elements are added as children of the element. If one of the arguments is an object, the `el` function will attempt to assign the object's attributes to the element.
@@ -57,13 +57,16 @@ el("div[foo=bar].mt-3");
 Event listeners example:
 
 ```js
-el("div", {
-    id: "myDiv",
-    class: [ "container", "fluid" ],
-    onClick: function(event) {
-            console.log("Clicked on the div!");
+el("div", 
+    {
+        id: "myDiv",
+        class: [ "container", "fluid" ],
+        onClick(event) {
+            console.log("Clicked on : ", event.target);
         }
-    }, "Click me!");
+    }, 
+    "Click me!"
+);
 ```
 ```html
 <div class="container fluid" id="myDiv">
@@ -76,10 +79,13 @@ el("div", {
 Input example:
 
 ```js
-el("input", {
-    type: "text",
-    name: "userName",
-    placeholder: "Type something..."});
+el("input", 
+    {
+        type: "text",
+        name: "userName",
+        placeholder: "Type something..."
+    }
+);
 ```
 ```html
 <input type="text" name="userName" placeholder="Type something...">
@@ -91,7 +97,7 @@ Nested childrens:
 
 ```js
 el(".form-group",
-    el("label", { for: "cheese" }),
+    el("label", { for: "cheese" }, "I want cheese"),
     el("input[type=checkbox]#cheese"));
 ```
 ```html
@@ -108,11 +114,12 @@ el(".form-group",
 Mixed content:
 
 ```js
-el("custom-tag", "inner text", el("span", "inner span"));
+el("custom-tag", "inner text", 123, el("span", "inner span"));
 ```
 ```html
 <custom-tag>
     inner text
+    123
     <span>
         inner span
     </span>
@@ -126,16 +133,19 @@ Custom attributes:
 ```js
 el("div", {
     customAttribute: "custom value",
-    'data-custom-text': true});
+    'data-custom-text': true
+});
 ```
 ```html
-<div customattribute="custom value" data-custom-text="data-custom-text">
+<div custom-attribute="custom value" data-custom-text="data-custom-text">
 </div>
 ```
 
+> Note: attributes written in camelCase are converted to kebab-case in the HTML element.
+
 ---
 
-Inline components:
+Inline/function components:
 
 ```js
 const ul = function() { return el('ul', { class: "custom-ul" }, ...arguments); }
@@ -144,7 +154,8 @@ const li = function() { return el('li', ...arguments); }
 ul(
     li("Apple"),
     li("Limon"),
-    li("Banana"));
+    li("Banana")
+);
 ```
 ```html
 <ul class="custom-ul">
@@ -183,7 +194,22 @@ element.setHelloTarget("Big World!");
 ```
 ---
 
-Inline components with arguments:
+Special life-cycle methods:
+
+```js
+const element = el("div", {
+    mount() {
+        console.log("Element added to DOM: ", this);
+    },
+    init() {
+        console.log("Element created: ", this);
+    }
+});
+```
+
+---
+
+Function components with arguments:
 
 ```js
 const Card = function (cardTitle, ...children) {
@@ -253,6 +279,12 @@ const renderedNode = el.format`
     </div>
 `;
 ```
+```html
+<div>
+    <p>This is unsafe.</p>
+    <script>alert('XSS')</script>
+</div>
+```
 
 ---
 
@@ -270,6 +302,53 @@ el(".safe-text",
     Escaped &lt;text&gt;
 </div>
 ```
+
+By default, el() encodes strings instances to text nodes and does not render unsafe HTML. If you want to render unsafe HTML, use el.raw().
+
+## Reactive elements
+
+It is possible to simulate a reactivity effect with the `el.state` properties.
+
+The `el.state.create()` method creates a "state", which is an object that can be observed and, when changed, triggers an update in the interface:
+
+```js
+const state = el.state.create("foo"); // "foo" is the initial value
+state.subscribe(x => console.log(x));
+state.value = "bar"; // "bar" is the new value
+```
+
+A state exposes the following methods:
+- `subscribe(listener)`: adds a listener to be notified of changes
+- `unsubscribe(listener)`: removes a listener
+- `clearSubscriptions()`: removes all listeners
+- `requestUpdate()`: forces an update with the current value
+- `reset()`: resets the state to the initial value
+
+You can create elements that update whenever a state is changed:
+
+```js
+function Counter(initialValue = 0) {
+
+    // defines the initial state
+    const counterState = el.state.create(initialValue);
+    
+    // returns an element that listens for changes in any state
+    // provided in the list of states
+    return el.state.listening([counterState], () =>
+        el("div",
+            el("button", { onClick() { counterState.value++ } }, "Increment"),
+            el("span", "Current value: ", counterState.value)
+        )
+    );
+}
+
+const counter = Counter(10);
+document.body.appendChild(counter);
+```
+
+The `el.state.listening` method returns the initial callback by default, even without an event being triggered initially. After an update of any state within the provided array, the rendering callback is called again. For this to happen, the callback **always** has to return an `HTMLElement`. It cannot return `null`, fragment, or text node, as these objects will not be able to be tracked for state updates.
+
+The callback returns a new element and replaces the previous one, so do not create circular update references. It is not recommended to use states to capture user input where focus is relevant, such as text inputs and textareas, unless the focus on the element is not relevant if lost.
 
 ## Defined components
 
