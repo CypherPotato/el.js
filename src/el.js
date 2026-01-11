@@ -35,7 +35,9 @@ function setAttributeStyles(element, styleObj) {
     if (typeof styleObj === 'string') {
         element.style.cssText = styleObj;
     } else {
-        Object.assign(element.style, styleObj);
+        for (const [key, value] of Object.entries(styleObj)) {
+            element.style.setProperty(key, value);
+        }
     }
 }
 

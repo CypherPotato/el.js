@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="/dist/el.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const styledDiv = el("div", "hello, world!", {
+            style: {
+                color: "blue",
+                "--variable": "red",
+                border: "1px solid var(--variable)"
+            }
+        });
+
+        document.body.appendChild(styledDiv);
+    </script>
+</body>
+
+</html>
