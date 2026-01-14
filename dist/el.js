@@ -224,7 +224,11 @@ function setAttributeStyles(element, styleObj) {
     element.style.cssText = styleObj;
   } else {
     for (const [key, value] of Object.entries(styleObj)) {
-      element.style.setProperty(key, value);
+      if (key.startsWith("--")) {
+        element.style.setProperty(key, value);
+      } else {
+        element.style[key] = value;
+      }
     }
   }
 }
